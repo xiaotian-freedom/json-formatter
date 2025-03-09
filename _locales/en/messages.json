@@ -1,0 +1,128 @@
+{
+  "appName": {
+    "message": "Elegant JSON",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Elegant JSON formatter",
+    "description": "The description of the application"
+  },
+  "formatJson": {
+    "message": "Format",
+    "description": "Format button text"
+  },
+  "copy": {
+    "message": "Copy",
+    "description": "Copy button text"
+  },
+  "download": {
+    "message": "Download",
+    "description": "Download button text"
+  },
+  "expand": {
+    "message": "Expand",
+    "description": "Expand button text"
+  },
+  "collapse": {
+    "message": "Collapse",
+    "description": "Collapse button text"
+  },
+  "autoFormat": {
+    "message": "Auto Format",
+    "description": "Auto format toggle text"
+  },
+  "searchJson": {
+    "message": "Search JSON",
+    "description": "Search dialog title"
+  },
+  "searchPlaceholder": {
+    "message": "Enter search keyword...",
+    "description": "Search input placeholder"
+  },
+  "noResults": {
+    "message": "No results found",
+    "description": "No search results text"
+  },
+  "results": {
+    "message": "$COUNT$ results",
+    "description": "Search results count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "currentResult": {
+    "message": "$CURRENT$ of $TOTAL$ results",
+    "description": "Current search result position",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "caseSensitive": {
+    "message": "Case sensitive",
+    "description": "Case sensitive option"
+  },
+  "jsonEmpty": {
+    "message": "JSON is empty",
+    "description": "JSON empty error"
+  },
+  "jsonInvalid": {
+    "message": "Invalid JSON: $ERROR$",
+    "description": "JSON invalid error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Unexpected token"
+      }
+    }
+  },
+  "formatSuccess": {
+    "message": "JSON formatted successfully",
+    "description": "Format success message"
+  },
+  "copySuccess": {
+    "message": "Copied to clipboard",
+    "description": "Copy success message"
+  },
+  "copyFailed": {
+    "message": "Copy failed: $ERROR$",
+    "description": "Copy failed message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Permission denied"
+      }
+    }
+  },
+  "downloadSuccess": {
+    "message": "JSON downloaded",
+    "description": "Download success message"
+  },
+  "downloadFailed": {
+    "message": "Download failed: $ERROR$",
+    "description": "Download failed message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "File error"
+      }
+    }
+  },
+  "inputPlaceholder": {
+    "message": "Enter or paste JSON data...",
+    "description": "Input area placeholder"
+  },
+  "language": {
+    "message": "Language",
+    "description": "Language setting label"
+  }
+} 

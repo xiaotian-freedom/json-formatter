@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="64" cy="64" r="60" fill="#4285f4" />
+  <circle cx="64" cy="64" r="56" fill="#5a9cf8" />
+  <circle cx="64" cy="64" r="52" fill="#ffffff" />
+  
+  <!-- JSON 符号 - 左大括号，调整Y坐标使其垂直居中 -->
+  <path d="M48,37 C43,37 40,39 40,45 L40,56 C40,60 38,62 34,62 C38,62 40,64 40,68 L40,79 C40,85 43,87 48,87" 
+        fill="none" stroke="#0e639c" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- JSON 符号 - 右大括号，调整Y坐标使其垂直居中 -->
+  <path d="M80,37 C85,37 88,39 88,45 L88,56 C88,60 90,62 94,62 C90,62 88,64 88,68 L88,79 C88,85 85,87 80,87" 
+        fill="none" stroke="#0e639c" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- 格式化缩进线条 - 代表格式化，调整Y坐标使其与花括号对齐 -->
+  <line x1="59" y1="49" x2="70" y2="49" stroke="#4285f4" stroke-width="4" stroke-linecap="round" />
+  <line x1="59" y1="62" x2="75" y2="62" stroke="#4285f4" stroke-width="4" stroke-linecap="round" />
+  <line x1="59" y1="75" x2="65" y2="75" stroke="#4285f4" stroke-width="4" stroke-linecap="round" />
+</svg>

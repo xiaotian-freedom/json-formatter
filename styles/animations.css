@@ -1,0 +1,122 @@
+/* 入场动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.entrance-animation {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* 展开动画 */
+@keyframes expandNode {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+
+.expand-animation {
+  animation: expandNode 0.3s ease-out;
+}
+
+/* 折叠动画 */
+@keyframes collapseNode {
+  from {
+    opacity: 1;
+    max-height: 1000px;
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+}
+
+.collapse-animation {
+  animation: collapseNode 0.3s ease-in;
+}
+
+/* 通知动画 */
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  color: white;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.3s;
+  z-index: 1000;
+}
+
+.notification.success {
+  background-color: #28a745;
+  box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+}
+
+.notification.error {
+  background-color: #dc3545;
+  box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+}
+
+.notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 按钮悬停效果 */
+button {
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* 折叠/展开图标动画 */
+.toggle-btn:before,
+.toggle-btn:after {
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* 主题切换过渡 */
+body, button, input, .json-item, .json-key, .json-string, 
+.json-number, .json-boolean, .json-null, .json-brace {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+} 

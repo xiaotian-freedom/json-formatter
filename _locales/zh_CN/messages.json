@@ -1,0 +1,128 @@
+{
+  "appName": {
+    "message": "锦衣JSON",
+    "description": "应用名称"
+  },
+  "appDescription": {
+    "message": "优雅的JSON格式化工具",
+    "description": "应用描述"
+  },
+  "formatJson": {
+    "message": "格式化",
+    "description": "格式化按钮文本"
+  },
+  "copy": {
+    "message": "复制",
+    "description": "复制按钮文本"
+  },
+  "download": {
+    "message": "下载",
+    "description": "下载按钮文本"
+  },
+  "expand": {
+    "message": "展开",
+    "description": "展开按钮文本"
+  },
+  "collapse": {
+    "message": "折叠",
+    "description": "折叠按钮文本"
+  },
+  "autoFormat": {
+    "message": "自动格式化",
+    "description": "自动格式化开关文本"
+  },
+  "searchJson": {
+    "message": "搜索JSON",
+    "description": "搜索对话框标题"
+  },
+  "searchPlaceholder": {
+    "message": "输入搜索关键词...",
+    "description": "搜索输入框占位文本"
+  },
+  "noResults": {
+    "message": "未找到结果",
+    "description": "无搜索结果文本"
+  },
+  "results": {
+    "message": "$COUNT$ 个结果",
+    "description": "搜索结果计数",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "currentResult": {
+    "message": "$CURRENT$/$TOTAL$ 个结果",
+    "description": "当前搜索结果位置",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "caseSensitive": {
+    "message": "区分大小写",
+    "description": "区分大小写选项"
+  },
+  "jsonEmpty": {
+    "message": "JSON为空",
+    "description": "JSON为空错误提示"
+  },
+  "jsonInvalid": {
+    "message": "JSON格式无效: $ERROR$",
+    "description": "JSON格式错误提示",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Unexpected token"
+      }
+    }
+  },
+  "formatSuccess": {
+    "message": "JSON格式化成功",
+    "description": "格式化成功提示"
+  },
+  "copySuccess": {
+    "message": "已复制到剪贴板",
+    "description": "复制成功提示"
+  },
+  "copyFailed": {
+    "message": "复制失败: $ERROR$",
+    "description": "复制失败提示",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Permission denied"
+      }
+    }
+  },
+  "downloadSuccess": {
+    "message": "JSON已下载",
+    "description": "下载成功提示"
+  },
+  "downloadFailed": {
+    "message": "下载失败: $ERROR$",
+    "description": "下载失败提示",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "File error"
+      }
+    }
+  },
+  "inputPlaceholder": {
+    "message": "请输入或粘贴JSON数据...",
+    "description": "输入框占位文本"
+  },
+  "language": {
+    "message": "语言",
+    "description": "语言设置标签"
+  }
+} 
