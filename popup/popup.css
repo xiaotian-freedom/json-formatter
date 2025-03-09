@@ -935,4 +935,17 @@ input:checked + .toggle-slider:before {
 
 .dark-theme .language-selector select:hover {
   background: rgba(255, 255, 255, 0.15);
+}
+
+/* 添加到现有CSS中 - 图片链接样式 */
+.json-image-link {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: rgba(var(--accent-rgb), 0.5);
+  cursor: zoom-in;
+  transition: color 0.2s ease;
+}
+
+.json-image-link:hover {
+  color: var(--accent-color);
 } 

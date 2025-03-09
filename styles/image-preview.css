@@ -1,0 +1,108 @@
+/* 图片预览容器 */
+.image-preview-container {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--background-color);
+  max-width: 350px;
+  max-height: 350px;
+}
+
+/* 显示状态 */
+.image-preview-container.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* 图片容器 */
+.image-preview-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 图片样式 */
+.image-preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-preview-image.loaded {
+  opacity: 1;
+}
+
+/* 加载指示器 */
+.image-preview-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+}
+
+.image-preview-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(var(--accent-rgb), 0.2);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spinner-rotate 1s linear infinite;
+}
+
+/* 错误显示 */
+.image-preview-error {
+  padding: 20px;
+  color: #e53935;
+  font-size: 14px;
+  text-align: center;
+  background: var(--background-color);
+}
+
+/* 图片信息 */
+.image-preview-info {
+  padding: 10px 15px;
+  background: var(--background-color);
+  border-top: 1px solid rgba(var(--foreground-rgb), 0.1);
+  font-size: 12px;
+  color: var(--foreground-color);
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-preview-dimensions {
+  color: rgba(var(--foreground-rgb), 0.7);
+}
+
+/* 动画 */
+@keyframes spinner-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 深色模式调整 */
+.dark-theme .image-preview-container {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: var(--background-color);
+} 

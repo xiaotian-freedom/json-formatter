@@ -219,4 +219,16 @@ class JsonViewer {
       element.classList.remove("collapse-animation");
     }, 300);
   }
+}
+
+// 在渲染字符串值时添加图片链接检测
+function renderStringValue(value) {
+  const stringContainer = document.createElement('span');
+  stringContainer.className = 'json-string';
+  stringContainer.textContent = `"${value}"`;
+  
+  // 这里不需要进行图片检测，因为已经在image-preview.js中处理
+  // 只需确保值正确显示
+  
+  return stringContainer;
 } 
