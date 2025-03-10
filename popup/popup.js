@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const collapseAllBtn = document.getElementById("collapseAllBtn");
   const themeToggle = document.getElementById("themeToggle");
   const autoFormatToggle = document.getElementById("autoFormatToggle");
+  const tsModelBtn = document.getElementById("tsModelBtn");
 
   // 创建JSON查看器实例
   const viewer = new JsonViewer(jsonViewer);
@@ -180,43 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
       chrome.storage.sync.set({ theme: "light" });
     }
   });
-
-  // 修复显示通知函数
-  function showNotification(message, type = "info") {
-    // 检查并创建通知容器
-    let notificationContainer = document.querySelector('.notification-container');
-    if (!notificationContainer) {
-      notificationContainer = document.createElement('div');
-      notificationContainer.className = 'notification-container';
-      document.body.appendChild(notificationContainer);
-    }
-
-    // 创建通知元素
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-
-    // 添加到容器
-    notificationContainer.innerHTML = ''; // 清除之前的通知
-    notificationContainer.appendChild(notification);
-
-    // 显示通知
-    setTimeout(() => {
-      notification.classList.add('show');
-    }, 10);
-
-    // 设置自动隐藏
-    setTimeout(() => {
-      notification.classList.remove('show');
-      setTimeout(() => {
-        notification.remove();
-        // 如果没有其他通知，移除容器
-        if (notificationContainer.children.length === 0) {
-          notificationContainer.remove();
-        }
-      }, 400);
-    }, 3000);
-  }
 
   // 添加分隔线拖动调整功能
   const contentContainer = document.querySelector('.content-container');
@@ -530,4 +494,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // 合并相邻的文本节点
     document.getElementById("jsonViewer").normalize();
   }
+
+  // TS模型生成按钮点击事件
+  tsModelBtn.addEventListener("click", () => {
+    // 检查是否有有效的JSON数据
+    if (!viewer.jsonData) {
+      showNotification(__("jsonEmpty") || "请先输入有效的JSON数据", "error");
+      return;
+    }
+    
+    try {
+      // 显示TS模型对话框
+      if (window.tsModelDialog) {
+        // 传递当前JSON数据
+        window.tsModelDialog.show(viewer.jsonData);
+      } else {
+        showNotification(__("tsModelError") || "TS模型生成器初始化失败", "error");
+      }
+    } catch (error) {
+      console.error("TS模型生成错误:", error);
+      showNotification(__("tsModelGenerateError", error.message) || `生成TS模型失败: ${error.message}`, "error");
+    }
+  });
 }); 

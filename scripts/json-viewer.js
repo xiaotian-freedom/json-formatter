@@ -8,7 +8,6 @@ class JsonViewer {
   load(jsonString) {
     try {
       this.jsonData = JSON.parse(jsonString);
-      console.log(this.jsonData);
       this.render();
       return true;
     } catch (e) {

@@ -14,8 +14,8 @@ chrome.action.onClicked.addListener(() => {
   chrome.windows.create({
     url: chrome.runtime.getURL("popup/popup.html?standalone=true"),
     type: "popup",
-    width: 1000,
-    height: 800
+    width: 1280,
+    height: 1000
   });
 });
 
@@ -50,8 +50,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.windows.create({
         url: chrome.runtime.getURL("popup/popup.html?standalone=true&source=direct"),
         type: "popup",
-        width: 800,
-        height: 600
+        width: 1280,
+        height: 1000
       });
     });
   }
@@ -63,8 +63,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.windows.create({
         url: chrome.runtime.getURL("popup/popup.html?standalone=true&source=selection"),
         type: "popup",
-        width: 800,
-        height: 600
+        width: 1280,
+        height: 1000
       });
     });
   }

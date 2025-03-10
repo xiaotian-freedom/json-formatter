@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="popup.css">
   <link rel="stylesheet" href="../styles/themes.css">
   <link rel="stylesheet" href="../styles/animations.css">
+  <link rel="stylesheet" href="../styles/glass-buttons.css">
 </head>
 <body class="light-theme">
   <div class="container">
@@ -48,6 +49,7 @@
       <div class="output-area">
         <div id="jsonViewer"></div>
         <div class="output-actions">
+          <button id="tsModelBtn" class="glass-btn" data-i18n="generateTsModel" title="生成TypeScript模型">TS模型</button>
           <button id="copyBtn" class="glass-btn" data-i18n="copy" title="复制">复制</button>
           <button id="downloadBtn" class="glass-btn" data-i18n="download" title="下载">下载</button>
           <button id="expandAllBtn" class="glass-btn" data-i18n="expand" title="全部展开">展开</button>
@@ -84,6 +86,9 @@
   <script src="../scripts/json-viewer.js"></script>
   <script src="../scripts/i18n.js"></script>
   <script src="../scripts/image-preview.js"></script>
+  <script src="../scripts/ts-model-generator.js"></script>
+  <script src="../scripts/ts-model-dialog.js"></script>
+  <script src="../scripts/utilities.js"></script>
   <script src="popup.js"></script>
 </body>
 </html> 

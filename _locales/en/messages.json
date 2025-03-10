@@ -124,5 +124,75 @@
   "language": {
     "message": "Language",
     "description": "Language setting label"
+  },
+  "generateTsModel": {
+    "message": "TS Model",
+    "description": "Generate TypeScript model button text"
+  },
+  "tsModelTitle": {
+    "message": "Generate TypeScript Model",
+    "description": "TS model dialog title"
+  },
+  "tsCodeCopied": {
+    "message": "TypeScript code copied to clipboard",
+    "description": "TS code copy success message"
+  },
+  "tsCopyFailed": {
+    "message": "Failed to copy TypeScript code",
+    "description": "TS code copy failed message"
+  },
+  "tsModelError": {
+    "message": "TS model generator initialization failed",
+    "description": "TS model generator error message"
+  },
+  "tsModelGenerateError": {
+    "message": "Failed to generate TS model: $ERROR$",
+    "description": "TS model generation error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Invalid JSON"
+      }
+    }
+  },
+  "rootInterfaceName": {
+    "message": "Root Interface Name",
+    "description": "Root interface name setting label"
+  },
+  "exportKeyword": {
+    "message": "Add export keyword",
+    "description": "Add export keyword setting"
+  },
+  "useType": {
+    "message": "Use type instead of interface",
+    "description": "Use type instead of interface setting"
+  },
+  "optionalProps": {
+    "message": "Optional properties",
+    "description": "Optional properties setting"
+  },
+  "semicolons": {
+    "message": "Use semicolons",
+    "description": "Use semicolons setting"
+  },
+  "usePascalCase": {
+    "message": "PascalCase interface names",
+    "description": "Use PascalCase interface names setting"
+  },
+  "unknownType": {
+    "message": "Unknown type",
+    "description": "Unknown type setting"
+  },
+  "copyTsCode": {
+    "message": "Copy Code",
+    "description": "Copy TS code button"
+  },
+  "regenerate": {
+    "message": "Regenerate",
+    "description": "Regenerate button"
+  },
+  "close": {
+    "message": "Close",
+    "description": "Close button"
   }
 } 

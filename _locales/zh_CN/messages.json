@@ -124,5 +124,75 @@
   "language": {
     "message": "语言",
     "description": "语言设置标签"
+  },
+  "generateTsModel": {
+    "message": "TS模型",
+    "description": "生成TypeScript模型按钮文本"
+  },
+  "tsModelTitle": {
+    "message": "生成TypeScript模型",
+    "description": "TS模型对话框标题"
+  },
+  "tsCodeCopied": {
+    "message": "TypeScript代码已复制到剪贴板",
+    "description": "TS代码复制成功提示"
+  },
+  "tsCopyFailed": {
+    "message": "复制TypeScript代码失败",
+    "description": "TS代码复制失败提示"
+  },
+  "tsModelError": {
+    "message": "TS模型生成器初始化失败",
+    "description": "TS模型生成器错误提示"
+  },
+  "tsModelGenerateError": {
+    "message": "生成TS模型失败: $ERROR$",
+    "description": "TS模型生成错误提示",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Invalid JSON"
+      }
+    }
+  },
+  "rootInterfaceName": {
+    "message": "根接口名称",
+    "description": "根接口名称设置标签"
+  },
+  "exportKeyword": {
+    "message": "添加export关键字",
+    "description": "添加export关键字设置"
+  },
+  "useType": {
+    "message": "使用type代替interface",
+    "description": "使用type代替interface设置"
+  },
+  "optionalProps": {
+    "message": "可选属性",
+    "description": "属性可选设置"
+  },
+  "semicolons": {
+    "message": "使用分号",
+    "description": "使用分号设置"
+  },
+  "usePascalCase": {
+    "message": "PascalCase接口名",
+    "description": "使用PascalCase接口名设置"
+  },
+  "unknownType": {
+    "message": "未知类型",
+    "description": "未知类型设置"
+  },
+  "copyTsCode": {
+    "message": "复制代码",
+    "description": "复制TS代码按钮"
+  },
+  "regenerate": {
+    "message": "重新生成",
+    "description": "重新生成按钮"
+  },
+  "close": {
+    "message": "关闭",
+    "description": "关闭按钮"
   }
 } 
