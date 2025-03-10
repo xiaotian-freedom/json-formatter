@@ -2,8 +2,9 @@ class JsonViewer {
   constructor(targetElement) {
     this.targetElement = targetElement;
     this.jsonData = null;
+    this.clickCallback = null;
   }
-  
+
   // 加载并格式化JSON
   load(jsonString) {
     try {
@@ -15,29 +16,29 @@ class JsonViewer {
       return false;
     }
   }
-  
+
   // 渲染JSON树
   render() {
     this.targetElement.innerHTML = "";
     const tree = this.createTree(this.jsonData);
     this.targetElement.appendChild(tree);
-    
+
     // 添加进入动画
     this.addEntranceAnimation(this.targetElement);
   }
-  
+
   // 创建JSON树结构
   createTree(data, key = null, isLast = true) {
     const container = document.createElement("div");
     container.className = "json-item";
-    
+
     if (key !== null) {
       const keyElement = document.createElement("span");
       keyElement.className = "json-key";
       keyElement.textContent = `"${key}": `;
       container.appendChild(keyElement);
     }
-    
+
     // 根据数据类型创建不同的显示元素
     if (Array.isArray(data)) {
       this.createArrayView(container, data, isLast);
@@ -46,34 +47,34 @@ class JsonViewer {
     } else {
       this.createPrimitiveView(container, data, isLast);
     }
-    
+
     return container;
   }
-  
+
   // 创建对象视图
   createObjectView(container, data, isLast) {
     const toggleBtn = document.createElement("span");
     toggleBtn.className = "toggle-btn expanded";
     toggleBtn.textContent = "";
     container.appendChild(toggleBtn);
-    
+
     const startBrace = document.createElement("span");
     startBrace.className = "json-brace";
     startBrace.textContent = "{";
     container.appendChild(startBrace);
-    
+
     const childContainer = document.createElement("div");
     childContainer.className = "json-children";
-    
+
     const keys = Object.keys(data);
     keys.forEach((key, index) => {
       const isLastItem = index === keys.length - 1;
       const childItem = this.createTree(data[key], key, isLastItem);
       childContainer.appendChild(childItem);
     });
-    
+
     container.appendChild(childContainer);
-    
+
     const endBraceContainer = document.createElement("div");
     endBraceContainer.className = "json-end-brace";
     const endBrace = document.createElement("span");
@@ -81,39 +82,42 @@ class JsonViewer {
     endBrace.textContent = "}" + (isLast ? "" : ",");
     endBraceContainer.appendChild(endBrace);
     container.appendChild(endBraceContainer);
-    
+
     // 添加折叠/展开功能
     this.addToggleFunction(toggleBtn, childContainer, endBraceContainer);
+
+    // 为整个对象添加可点击功能
+    this.makeClickable(container, data);
   }
-  
+
   // 创建数组视图
   createArrayView(container, data, isLast) {
     const toggleBtn = document.createElement("span");
     toggleBtn.className = "toggle-btn expanded";
     toggleBtn.textContent = "";
     container.appendChild(toggleBtn);
-    
+
     const startBracket = document.createElement("span");
     startBracket.className = "json-brace";
     startBracket.textContent = "[";
     container.appendChild(startBracket);
-    
+
     const childContainer = document.createElement("div");
     childContainer.className = "json-children";
-    
+
     // 遍历数组元素
     data.forEach((item, index) => {
       const isLastItem = index === data.length - 1;
       // 为数组元素创建包装容器
       const itemContainer = document.createElement("div");
       itemContainer.className = "json-item";
-      
+
       // 添加数组索引作为备注
       const indexElement = document.createElement("span");
       indexElement.className = "json-array-index";
       indexElement.textContent = `[${index}] `;
       itemContainer.appendChild(indexElement);
-      
+
       // 根据数组元素类型创建不同的视图
       if (Array.isArray(item)) {
         this.createArrayView(itemContainer, item, isLastItem);
@@ -122,12 +126,12 @@ class JsonViewer {
       } else {
         this.createPrimitiveView(itemContainer, item, isLastItem);
       }
-      
+
       childContainer.appendChild(itemContainer);
     });
-    
+
     container.appendChild(childContainer);
-    
+
     const endBracketContainer = document.createElement("div");
     endBracketContainer.className = "json-end-brace";
     const endBracket = document.createElement("span");
@@ -135,15 +139,18 @@ class JsonViewer {
     endBracket.textContent = "]" + (isLast ? "" : ",");
     endBracketContainer.appendChild(endBracket);
     container.appendChild(endBracketContainer);
-    
+
     // 添加折叠/展开功能
     this.addToggleFunction(toggleBtn, childContainer, endBracketContainer);
+
+    // 为整个数组添加可点击功能
+    this.makeClickable(container, data);
   }
-  
+
   // 创建基本类型值的视图
   createPrimitiveView(container, data, isLast) {
     const valueElement = document.createElement("span");
-    
+
     if (typeof data === "string") {
       valueElement.className = "json-string";
       valueElement.textContent = `"${data}"${isLast ? "" : ","}`;
@@ -157,10 +164,13 @@ class JsonViewer {
       valueElement.className = "json-null";
       valueElement.textContent = `null${isLast ? "" : ","}`;
     }
-    
+
     container.appendChild(valueElement);
+
+    // 添加可点击样式和事件
+    this.makeClickable(valueElement, data);
   }
-  
+
   // 添加折叠/展开功能 - 提取为独立方法以复用
   addToggleFunction(toggleBtn, childContainer, endBraceContainer) {
     toggleBtn.addEventListener("click", () => {
@@ -168,7 +178,7 @@ class JsonViewer {
       toggleBtn.classList.toggle("collapsed");
       childContainer.classList.toggle("hidden");
       endBraceContainer.classList.toggle("collapsed-end");
-      
+
       // 添加展开/折叠动画
       if (childContainer.classList.contains("hidden")) {
         this.addCollapseAnimation(childContainer);
@@ -177,24 +187,24 @@ class JsonViewer {
       }
     });
   }
-  
+
   // 展开全部节点
   expandAll() {
     const toggleButtons = this.targetElement.querySelectorAll(".toggle-btn.collapsed");
     toggleButtons.forEach(btn => btn.click());
   }
-  
+
   // 折叠全部节点
   collapseAll() {
     const toggleButtons = this.targetElement.querySelectorAll(".toggle-btn.expanded");
     toggleButtons.forEach(btn => btn.click());
   }
-  
+
   // 显示错误信息
   showError(message) {
     this.targetElement.innerHTML = `<div class="json-error">${message}</div>`;
   }
-  
+
   // 添加进入动画
   addEntranceAnimation(element) {
     element.classList.add("entrance-animation");
@@ -202,7 +212,7 @@ class JsonViewer {
       element.classList.remove("entrance-animation");
     }, 500);
   }
-  
+
   // 添加展开动画
   addExpandAnimation(element) {
     element.classList.add("expand-animation");
@@ -210,13 +220,42 @@ class JsonViewer {
       element.classList.remove("expand-animation");
     }, 300);
   }
-  
+
   // 添加折叠动画
   addCollapseAnimation(element) {
     element.classList.add("collapse-animation");
     setTimeout(() => {
       element.classList.remove("collapse-animation");
     }, 300);
+  }
+
+  // 设置点击回调函数
+  setClickCallback(callback) {
+    this.clickCallback = callback;
+  }
+
+  // 添加可点击功能的方法
+  makeClickable(element, data) {
+    // 添加可点击的样式
+    element.classList.add('json-clickable');
+    element.title = '点击复制到输入框';
+
+    // 添加点击事件
+    element.addEventListener('click', (e) => {
+      // 阻止事件冒泡，防止触发父元素的折叠/展开
+      e.stopPropagation();
+
+      // 如果有回调函数，则调用它并传递数据
+      if (this.clickCallback) {
+        let valueToFill;
+        if (typeof data === 'object' && data !== null) {
+          valueToFill = JSON.stringify(data, null, 2);
+        } else {
+          valueToFill = JSON.stringify(data);
+        }
+        this.clickCallback(valueToFill);
+      }
+    });
   }
 }
 
@@ -225,9 +264,9 @@ function renderStringValue(value) {
   const stringContainer = document.createElement('span');
   stringContainer.className = 'json-string';
   stringContainer.textContent = `"${value}"`;
-  
+
   // 这里不需要进行图片检测，因为已经在image-preview.js中处理
   // 只需确保值正确显示
-  
+
   return stringContainer;
 } 

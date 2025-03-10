@@ -13,6 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // 创建JSON查看器实例
   const viewer = new JsonViewer(jsonViewer);
 
+  // 设置点击回调函数
+  viewer.setClickCallback((value) => {
+    jsonInput.value = value;
+    // 自动格式化点击填充的JSON
+    // if (autoFormatToggle.checked && value) {
+    //   formatJson();
+    // }
+  });
+
   // 检查是否有待处理的JSON数据
   chrome.storage.local.get("pendingJson", (data) => {
     if (data.pendingJson) {
@@ -54,10 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const jsonString = jsonInput.value.trim();
     if (jsonString) {
       try {
+        // 先尝试解析JSON，验证格式是否正确
+        JSON.parse(jsonString);
+        // JSON格式正确才加载到查看器
         viewer.load(jsonString);
         showNotification(__("formatSuccess"), "success");
       } catch (e) {
-        showNotification(__("jsonInvalid", e.message), "error");
+        viewer.load(jsonString);
+        // showNotification(__("jsonInvalid", e.message), "error");
       }
     }
   }
@@ -250,11 +263,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextResultBtn = document.getElementById("nextResultBtn");
   const resultCount = document.getElementById("resultCount");
   const caseSensitiveToggle = document.getElementById("caseSensitiveToggle");
-  
+
   // 搜索状态变量
   let searchResults = [];
   let currentResultIndex = -1;
-  
+
   // 搜索按钮点击事件
   searchBtn.addEventListener("click", () => {
     searchModal.classList.add("active");
@@ -264,14 +277,14 @@ document.addEventListener("DOMContentLoaded", () => {
       performSearch();
     }
   });
-  
+
   // 关闭搜索弹窗
   closeSearchBtn.addEventListener("click", () => {
     searchModal.classList.remove("active");
     // 清除所有高亮
     clearHighlights();
   });
-  
+
   // 点击弹窗外部关闭
   searchModal.addEventListener("click", (e) => {
     if (e.target === searchModal) {
@@ -279,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
       clearHighlights();
     }
   });
-  
+
   // 快捷键支持
   document.addEventListener("keydown", (e) => {
     // Esc关闭弹窗
@@ -287,14 +300,14 @@ document.addEventListener("DOMContentLoaded", () => {
       searchModal.classList.remove("active");
       clearHighlights();
     }
-    
+
     // Ctrl+F打开搜索
     if (e.key === "f" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       searchModal.classList.add("active");
       searchInput.focus();
     }
-    
+
     // 回车键执行搜索
     if (e.key === "Enter" && searchModal.classList.contains("active")) {
       if (e.shiftKey) {
@@ -304,36 +317,36 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-  
+
   // 输入框实时搜索
   searchInput.addEventListener("input", performSearch);
-  
+
   // 区分大小写切换
   caseSensitiveToggle.addEventListener("change", performSearch);
-  
+
   // 搜索导航按钮
   prevResultBtn.addEventListener("click", navigateToPrevResult);
   nextResultBtn.addEventListener("click", navigateToNextResult);
-  
+
   // 执行搜索
   function performSearch() {
     const searchTerm = searchInput.value.trim();
-    
+
     // 清除现有高亮
     clearHighlights();
-    
+
     if (!searchTerm) {
       resultCount.textContent = __("noResults");
       searchResults = [];
       currentResultIndex = -1;
       return;
     }
-    
+
     // 获取JSON查看器中的所有文本节点
     const jsonViewer = document.getElementById("jsonViewer");
     searchResults = [];
     findTextNodesWithTerm(jsonViewer, searchTerm, caseSensitiveToggle.checked);
-    
+
     if (searchResults.length > 0) {
       resultCount.textContent = __("results", searchResults.length);
       currentResultIndex = 0;
@@ -344,11 +357,11 @@ document.addEventListener("DOMContentLoaded", () => {
       currentResultIndex = -1;
     }
   }
-  
+
   // 查找包含搜索词的文本节点
   function findTextNodesWithTerm(element, term, caseSensitive) {
     if (!element) return;
-    
+
     // 检查所有子节点
     Array.from(element.childNodes).forEach(node => {
       // 文本节点
@@ -356,12 +369,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const text = node.textContent;
         let searchText = text;
         let searchTerm = term;
-        
+
         if (!caseSensitive) {
           searchText = text.toLowerCase();
           searchTerm = term.toLowerCase();
         }
-        
+
         if (searchText.includes(searchTerm)) {
           searchResults.push({
             node: node,
@@ -380,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  
+
   // 高亮所有结果
   function highlightResults() {
     searchResults.forEach((result, index) => {
@@ -389,50 +402,50 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = result.text;
       const term = result.term;
       const caseSensitive = result.caseSensitive;
-      
+
       // 创建一个文档片段
       const fragment = document.createDocumentFragment();
-      
+
       let remaining = text;
       let lastIndex = 0;
-      
+
       // 查找所有匹配项
       while (true) {
         const searchText = caseSensitive ? remaining : remaining.toLowerCase();
         const searchTerm = caseSensitive ? term : term.toLowerCase();
         const index = searchText.indexOf(searchTerm, lastIndex);
-        
+
         if (index === -1) break;
-        
+
         // 添加前面的文本
         if (index > 0) {
           fragment.appendChild(document.createTextNode(
             remaining.substring(lastIndex, index)
           ));
         }
-        
+
         // 创建高亮span
         const highlight = document.createElement("span");
         highlight.className = "json-highlight";
         highlight.textContent = remaining.substring(index, index + term.length);
         highlight.dataset.searchIndex = searchResults.indexOf(result);
         fragment.appendChild(highlight);
-        
+
         lastIndex = index + term.length;
       }
-      
+
       // 添加剩余文本
       if (lastIndex < remaining.length) {
         fragment.appendChild(document.createTextNode(
           remaining.substring(lastIndex)
         ));
       }
-      
+
       // 替换原始节点
       parent.replaceChild(fragment, node);
     });
   }
-  
+
   // 导航到特定结果
   function navigateToResult(index) {
     // 移除之前的当前高亮
@@ -440,49 +453,49 @@ document.addEventListener("DOMContentLoaded", () => {
     currentHighlights.forEach(el => {
       el.classList.remove("json-current-highlight");
     });
-    
+
     if (searchResults.length === 0 || index < 0 || index >= searchResults.length) {
       return;
     }
-    
+
     // 查找当前索引对应的高亮元素
     const highlightElements = document.querySelectorAll(`.json-highlight[data-search-index="${index}"]`);
-    
+
     if (highlightElements.length > 0) {
       const highlight = highlightElements[0];
       highlight.classList.add("json-current-highlight");
-      
+
       // 滚动到视图
       highlight.scrollIntoView({
         behavior: "smooth",
         block: "center"
       });
-      
+
       // 更新结果计数显示
       resultCount.textContent = __("currentResult", index + 1, searchResults.length);
     }
   }
-  
+
   // 导航到下一个结果
   function navigateToNextResult() {
     if (searchResults.length === 0) return;
-    
+
     currentResultIndex = (currentResultIndex + 1) % searchResults.length;
     navigateToResult(currentResultIndex);
   }
-  
+
   // 导航到上一个结果
   function navigateToPrevResult() {
     if (searchResults.length === 0) return;
-    
+
     currentResultIndex = (currentResultIndex - 1 + searchResults.length) % searchResults.length;
     navigateToResult(currentResultIndex);
   }
-  
+
   // 清除所有高亮
   function clearHighlights() {
     const highlights = document.querySelectorAll(".json-highlight");
-    
+
     highlights.forEach(highlight => {
       // 获取高亮元素的文本内容
       const text = highlight.textContent;
@@ -490,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const textNode = document.createTextNode(text);
       highlight.parentNode.replaceChild(textNode, highlight);
     });
-    
+
     // 合并相邻的文本节点
     document.getElementById("jsonViewer").normalize();
   }
@@ -502,7 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showNotification(__("jsonEmpty") || "请先输入有效的JSON数据", "error");
       return;
     }
-    
+
     try {
       // 显示TS模型对话框
       if (window.tsModelDialog) {
