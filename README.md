@@ -85,10 +85,11 @@
 
 如果您觉得这个工具对您有所帮助，欢迎给我买杯咖啡支持项目的持续开发！
 
-### 微信支付
-![微信收款码](https://s21.ax1x.com/2025/03/11/pENbeiD.jpg)
-
-### 支付宝
-![支付宝收款码](https://s21.ax1x.com/2025/03/11/pENbmJe.jpg)
+<table>
+  <tr>
+    <td align="center"><img src="https://s21.ax1x.com/2025/03/11/pENbeiD.jpg" width="200px" alt="微信收款码"></td>
+    <td align="center"><img src="https://s21.ax1x.com/2025/03/11/pENbmJe.jpg" width="200px" alt="支付宝收款码"></td>
+  </tr>
+</table>
 
 非常感谢您的支持！
