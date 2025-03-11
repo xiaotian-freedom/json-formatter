@@ -1,8 +1,8 @@
 /**
- * Java模型对话框管理器
- * 处理Java模型生成界面交互
+ * Kotlin模型对话框管理器
+ * 处理Kotlin模型生成界面交互
  */
-class JavaModelDialog {
+class KotlinModelDialog {
     constructor() {
         // 创建对话框元素
         this.createDialogElement();
@@ -32,7 +32,7 @@ class JavaModelDialog {
         // 添加对话框内容
         this.dialog.innerHTML = `
             <div class="common-dialog-header">
-                <h2 data-i18n="javaModelGenerator">Java 模型生成器</h2>
+                <h2 data-i18n="kotlinModelGenerator">Kotlin 模型生成器</h2>
                 <button id="closeDialogBtn" class="common-close-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 6L6 18M6 6l12 12"></path>
@@ -48,30 +48,30 @@ class JavaModelDialog {
                             <label for="packageName" data-i18n="packageName">包名</label>
                         </div>
                         <div class="common-setting-item">
-                            <input type="text" id="rootClassName" value="RootObject" class="common-setting-input">
+                            <input type="text" id="rootClassName" value="RootModel" class="common-setting-input">
                             <label for="rootClassName" data-i18n="rootClassName">根类名</label>
                         </div>
                     </div>
                     
                     <div class="common-setting-group">
                         <div class="common-setting-item" style="margin-top: 5px;">
-                            <input type="checkbox" id="useGettersSetters" checked>
-                            <label for="useGettersSetters" data-i18n="useGettersSetters">生成Getter/Setter</label>
+                            <input type="checkbox" id="useDataClass" checked>
+                            <label for="useDataClass" data-i18n="useDataClass">使用data class</label>
                         </div>
                         <div class="common-setting-item" style="margin-bottom: 5px;">
-                            <input type="checkbox" id="useLombok">
-                            <label for="useLombok" data-i18n="useLombok">使用Lombok注解</label>
+                            <input type="checkbox" id="useNullableDatatypes" checked>
+                            <label for="useNullableDatatypes" data-i18n="useNullableDatatypes">使用可空类型</label>
                         </div>
                     </div>
                     
                     <div class="common-setting-group">
                         <div class="common-setting-item" style="margin-top: 5px;">
-                            <input type="checkbox" id="useJacksonAnnotations">
-                            <label for="useJacksonAnnotations" data-i18n="useJacksonAnnotations">添加Jackson注解</label>
+                            <input type="checkbox" id="useSerialAnnotation">
+                            <label for="useSerialAnnotation" data-i18n="useSerialAnnotation">添加序列化注解</label>
                         </div>
                         <div class="common-setting-item" style="margin-bottom: 5px;">
-                            <input type="checkbox" id="generateBuilders">
-                            <label for="generateBuilders" data-i18n="generateBuilders">生成Builder模式</label>
+                            <input type="checkbox" id="useCompanionObject">
+                            <label for="useCompanionObject" data-i18n="useCompanionObject">生成伴生对象</label>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ class JavaModelDialog {
                 <div class="common-content-area">
                     <div class="common-code-container">
                         <div class="common-code-editor">
-                            <pre id="javaCodeOutput" class="common-code"></pre>
+                            <pre id="kotlinCodeOutput" class="common-code"></pre>
                         </div>
                     </div>
                 </div>
@@ -87,12 +87,12 @@ class JavaModelDialog {
             
             <div class="common-dialog-footer">
                 <div class="common-dialog-actions">
-                    <button id="copyJavaCodeBtn" class="glass-btn">
+                    <button id="copyKotlinCodeBtn" class="glass-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
-                        <span data-i18n="copyJavaCode">复制代码</span>
+                        <span data-i18n="copyKotlinCode">复制代码</span>
                     </button>
                     <button id="regenerateBtn" class="glass-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -121,19 +121,19 @@ class JavaModelDialog {
         // 获取按钮和输入元素引用
         this.closeDialogBtn = this.dialog.querySelector('#closeDialogBtn');
         this.closeDialogBtnBottom = this.dialog.querySelector('#closeDialogBtnBottom');
-        this.copyJavaCodeBtn = this.dialog.querySelector('#copyJavaCodeBtn');
+        this.copyKotlinCodeBtn = this.dialog.querySelector('#copyKotlinCodeBtn');
         this.regenerateBtn = this.dialog.querySelector('#regenerateBtn');
 
         // 获取设置输入元素
         this.packageNameInput = this.dialog.querySelector('#packageName');
         this.rootClassNameInput = this.dialog.querySelector('#rootClassName');
-        this.useGettersSettersInput = this.dialog.querySelector('#useGettersSetters');
-        this.useLombokInput = this.dialog.querySelector('#useLombok');
-        this.useJacksonAnnotationsInput = this.dialog.querySelector('#useJacksonAnnotations');
-        this.generateBuildersInput = this.dialog.querySelector('#generateBuilders');
+        this.useDataClassInput = this.dialog.querySelector('#useDataClass');
+        this.useNullableDatatypesInput = this.dialog.querySelector('#useNullableDatatypes');
+        this.useSerialAnnotationInput = this.dialog.querySelector('#useSerialAnnotation');
+        this.useCompanionObjectInput = this.dialog.querySelector('#useCompanionObject');
 
         // 代码输出区域
-        this.codeOutput = this.dialog.querySelector('#javaCodeOutput');
+        this.codeOutput = this.dialog.querySelector('#kotlinCodeOutput');
     }
 
     /**
@@ -159,7 +159,7 @@ class JavaModelDialog {
             }
 
             // 复制代码按钮
-            if (e.target.id === 'copyJavaCodeBtn' || e.target.closest('#copyJavaCodeBtn')) {
+            if (e.target.id === 'copyKotlinCodeBtn' || e.target.closest('#copyKotlinCodeBtn')) {
                 this.copyToClipboard();
                 return;
             }
@@ -201,7 +201,7 @@ class JavaModelDialog {
 
     /**
      * 显示对话框
-     * @param {Object} jsonData - 要转换为Java模型的JSON数据
+     * @param {Object} jsonData - 要转换为Kotlin模型的JSON数据
      */
     show(jsonData) {
         // 只有当提供了新数据时才更新
@@ -237,9 +237,9 @@ class JavaModelDialog {
         // 恢复之前的设置
         this.restoreSettings();
 
-        // 生成Java模型
+        // 生成Kotlin模型
         setTimeout(() => {
-            this.generateJavaModel();
+            this.generateKotlinModel();
         }, 50);
     }
 
@@ -324,9 +324,9 @@ class JavaModelDialog {
     }
 
     /**
-     * 生成Java模型
+     * 生成Kotlin模型
      */
-    generateJavaModel() {
+    generateKotlinModel() {
         if (!this.jsonData) {
             this.codeOutput.textContent = this.getMessage('errorNoJsonData') || '// 错误：没有提供JSON数据';
             return;
@@ -347,22 +347,22 @@ class JavaModelDialog {
         // 获取当前配置
         const config = {
             packageName: this.packageNameInput.value,
-            rootClassName: this.rootClassNameInput.value || 'RootObject',
-            useGettersSetters: this.useGettersSettersInput.checked,
-            useLombok: this.useLombokInput.checked,
-            useJacksonAnnotations: this.useJacksonAnnotationsInput.checked,
-            generateBuilders: this.generateBuildersInput.checked
+            rootClassName: this.rootClassNameInput.value || 'RootModel',
+            useDataClass: this.useDataClassInput.checked,
+            useNullableDatatypes: this.useNullableDatatypesInput.checked,
+            useSerialAnnotation: this.useSerialAnnotationInput.checked,
+            useCompanionObject: this.useCompanionObjectInput.checked
         };
 
         console.log('config', config);
 
         try {
-            // 使用Java模型生成器生成代码
-            if (!window.javaModelGenerator) {
-                throw new Error('Java模型生成器未初始化');
+            // 使用Kotlin模型生成器生成代码
+            if (!window.kotlinModelGenerator) {
+                throw new Error('Kotlin模型生成器未初始化');
             }
 
-            const code = window.javaModelGenerator.generate(this.jsonData, config);
+            const code = window.kotlinModelGenerator.generate(this.jsonData, config);
 
             if (!code || code.length === 0) {
                 throw new Error('生成的代码为空');
@@ -371,7 +371,7 @@ class JavaModelDialog {
             // 显示生成的代码（包含语法高亮）
             this.setCodeWithHighlight(code);
         } catch (error) {
-            console.error('生成Java模型失败:', error);
+            console.error('生成Kotlin模型失败:', error);
             // 显示错误信息
             this.codeOutput.textContent = `// 生成失败: ${error.message}`;
         }
@@ -393,17 +393,17 @@ class JavaModelDialog {
                     "'": '&#39;'
                 }[tag]));
 
-            // 定义Java语法规则
+            // 定义Kotlin语法规则
             const patternMap = [
                 // 关键字
-                { pattern: /\b(public|private|protected|class|interface|extends|implements|static|final|abstract|import|package|throws|throw|try|catch|finally)\b/g, className: 'common-keyword' },
+                { pattern: /\b(class|data|object|companion|interface|fun|val|var|import|package|if|else|when|for|while|return|true|false|null|override|private|internal|public|protected)\b/g, className: 'common-keyword' },
                 // 基本类型和常用引用类型 - 使用新的类名避免斜体
-                { pattern: /\b(void|int|double|boolean|String|Object|List|Map|Set|Date|Integer|Double|Boolean|Float|Long|Short|Byte|char)\b/g, className: 'common-type-normal' },
+                { pattern: /\b(String|Int|Double|Boolean|List|Map|Set|Any|Nothing|Unit|Float|Long|Short|Byte|Char)\b/g, className: 'common-type-normal' },
                 // 注解
                 { pattern: /@\w+/g, className: 'common-java-annotation' },
                 // 用户定义类型
-                { pattern: /\b([A-Z][a-zA-Z0-9]*)\b(?=\s*(\{|extends|implements))/g, className: 'common-type' },
-                // 方法名
+                { pattern: /\b([A-Z][a-zA-Z0-9]*)\b(?!:)/g, className: 'common-type' },
+                // 函数名
                 { pattern: /\b([a-z][a-zA-Z0-9]*)\s*\(/g, className: 'common-method' },
                 // 字符串
                 { pattern: /"([^"]*)"|'([^']*)'/g, className: 'common-string' },
@@ -546,7 +546,7 @@ class JavaModelDialog {
             navigator.clipboard.writeText(code)
                 .then(() => {
                     // 使用全局通知函数
-                    showNotification(this.getMessage('javaCodeCopied') || '代码已复制到剪贴板', 'success');
+                    showNotification(this.getMessage('kotlinCodeCopied') || 'Kotlin代码已复制到剪贴板', 'success');
                 })
                 .catch(err => {
                     console.error('复制失败:', err);
@@ -579,13 +579,13 @@ class JavaModelDialog {
             const successful = document.execCommand('copy');
             if (successful) {
                 // 使用全局通知函数
-                showNotification(this.getMessage('javaCodeCopied') || '代码已复制到剪贴板', 'success');
+                showNotification(this.getMessage('kotlinCodeCopied') || 'Kotlin代码已复制到剪贴板', 'success');
             } else {
-                showNotification(this.getMessage('javaCopyFailed') || '复制失败', 'error');
+                showNotification(this.getMessage('kotlinCopyFailed') || '复制失败', 'error');
             }
         } catch (err) {
             console.error('备用复制方法失败:', err);
-            showNotification(this.getMessage('javaCopyFailed') || '复制失败', 'error');
+            showNotification(this.getMessage('kotlinCopyFailed') || '复制失败', 'error');
         } finally {
             // 清理
             document.body.removeChild(textarea);
@@ -593,7 +593,7 @@ class JavaModelDialog {
     }
 
     /**
-     * 重新生成Java模型
+     * 重新生成Kotlin模型
      */
     regenerate() {
         // 保存当前的滚动位置
@@ -603,8 +603,8 @@ class JavaModelDialog {
         // 创建并触发Siri风格动画
         this.playSiriAnimation();
 
-        // 生成Java模型
-        this.generateJavaModel();
+        // 生成Kotlin模型
+        this.generateKotlinModel();
 
         // 恢复滚动位置
         setTimeout(() => {
@@ -669,22 +669,22 @@ class JavaModelDialog {
     }
 
     /**
-     * 保存当前设置到localStorage
-     */
+      * 保存当前设置到localStorage
+      */
     saveSettings() {
         const settings = {
             packageName: this.packageNameInput.value,
             rootClassName: this.rootClassNameInput.value,
-            useGettersSetters: this.useGettersSettersInput.checked,
-            useLombok: this.useLombokInput.checked,
-            useJacksonAnnotations: this.useJacksonAnnotationsInput.checked,
-            generateBuilders: this.generateBuildersInput.checked
+            useDataClass: this.useDataClassInput.checked,
+            useNullableDatatypes: this.useNullableDatatypesInput.checked,
+            useSerialAnnotation: this.useSerialAnnotationInput.checked,
+            useCompanionObject: this.useCompanionObjectInput.checked
         };
 
         try {
-            localStorage.setItem('java-model-settings', JSON.stringify(settings));
+            localStorage.setItem('kotlin-model-settings', JSON.stringify(settings));
         } catch (e) {
-            console.warn('无法保存Java模型设置', e);
+            console.warn('无法保存Kotlin模型设置', e);
         }
     }
 
@@ -693,20 +693,20 @@ class JavaModelDialog {
      */
     restoreSettings() {
         try {
-            const savedSettings = localStorage.getItem('java-model-settings');
+            const savedSettings = localStorage.getItem('kotlin-model-settings');
             if (savedSettings) {
                 const settings = JSON.parse(savedSettings);
 
                 // 恢复设置值
                 if (settings.packageName !== undefined) this.packageNameInput.value = settings.packageName;
                 if (settings.rootClassName) this.rootClassNameInput.value = settings.rootClassName;
-                if (settings.useGettersSetters !== undefined) this.useGettersSettersInput.checked = settings.useGettersSetters;
-                if (settings.useLombok !== undefined) this.useLombokInput.checked = settings.useLombok;
-                if (settings.useJacksonAnnotations !== undefined) this.useJacksonAnnotationsInput.checked = settings.useJacksonAnnotations;
-                if (settings.generateBuilders !== undefined) this.generateBuildersInput.checked = settings.generateBuilders;
+                if (settings.useDataClass !== undefined) this.useDataClassInput.checked = settings.useDataClass;
+                if (settings.useNullableDatatypes !== undefined) this.useNullableDatatypesInput.checked = settings.useNullableDatatypes;
+                if (settings.useSerialAnnotation !== undefined) this.useSerialAnnotationInput.checked = settings.useSerialAnnotation;
+                if (settings.useCompanionObject !== undefined) this.useCompanionObjectInput.checked = settings.useCompanionObject;
             }
         } catch (e) {
-            console.warn('无法恢复Java模型设置', e);
+            console.warn('无法恢复Kotlin模型设置', e);
         }
     }
 
@@ -777,7 +777,7 @@ class JavaModelDialog {
     }
 }
 
-// 在页面加载后初始化Java模型对话框
+// 在页面加载后初始化Kotlin模型对话框
 document.addEventListener('DOMContentLoaded', () => {
     // 加载CSS
     const linkElement = document.createElement('link');
@@ -785,6 +785,6 @@ document.addEventListener('DOMContentLoaded', () => {
     linkElement.href = chrome.runtime.getURL('styles/common-model-dialog.css');
     document.head.appendChild(linkElement);
 
-    // 初始化Java模型对话框
-    window.javaModelDialog = new JavaModelDialog();
+    // 初始化Kotlin模型对话框
+    window.kotlinModelDialog = new KotlinModelDialog();
 });

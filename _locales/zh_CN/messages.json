@@ -198,5 +198,32 @@
   "close": {
     "message": "关闭",
     "description": "关闭按钮"
+  },
+  "generateKotlinModel": {
+    "message": "Kotlin模型"
+  },
+  "kotlinModelGenerator": {
+    "message": "Kotlin 模型生成器"
+  },
+  "useDataClass": {
+    "message": "使用data class"
+  },
+  "useNullableDatatypes": {
+    "message": "使用可空类型"
+  },
+  "useSerialAnnotation": {
+    "message": "添加序列化注解"
+  },
+  "useCompanionObject": {
+    "message": "生成伴生对象"
+  },
+  "kotlinCodeCopied": {
+    "message": "Kotlin代码已复制到剪贴板"
+  },
+  "kotlinCopyFailed": {
+    "message": "复制Kotlin代码失败"
+  },
+  "copyKotlinCode": {
+    "message": "复制Kotlin代码"
   }
 } 

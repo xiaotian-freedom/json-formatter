@@ -198,5 +198,32 @@
   "close": {
     "message": "Close",
     "description": "Close button"
+  },
+  "generateKotlinModel": {
+    "message": "Kotlin Model"
+  },
+  "kotlinModelGenerator": {
+    "message": "Kotlin Model Generator"
+  },
+  "useDataClass": {
+    "message": "Use data class"
+  },
+  "useNullableDatatypes": {
+    "message": "Use nullable types"
+  },
+  "useSerialAnnotation": {
+    "message": "Add serialization annotations"
+  },
+  "useCompanionObject": {
+    "message": "Generate companion object"
+  },
+  "kotlinCodeCopied": {
+    "message": "Kotlin code copied to clipboard"
+  },
+  "kotlinCopyFailed": {
+    "message": "Failed to copy Kotlin code"
+  },
+  "copyKotlinCode": {
+    "message": "Copy Kotlin Code"
   }
 } 

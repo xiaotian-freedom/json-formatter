@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const autoFormatToggle = document.getElementById("autoFormatToggle");
   const tsModelBtn = document.getElementById("tsModelBtn");
   const javaModelBtn = document.getElementById("javaModelBtn");
+  const kotlinModelBtn = document.getElementById("kotlinModelBtn");
 
   // 创建JSON查看器实例
   const viewer = new JsonViewer(jsonViewer);
@@ -511,9 +512,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // TS模型生成按钮点击事件
   tsModelBtn.addEventListener("click", () => {
-    // 检查是否有有效的JSON数据
-    if (!viewer.jsonData) {
-      showNotification(__("jsonEmpty") || "请先输入有效的JSON数据", "error");
+    // 获取当前JSON数据
+    const jsonData = getCurrentJsonData();
+
+    // 确保数据有效
+    if (!jsonData) {
+      showNotification(i18n.getMessage('invalidJson') || '无效的JSON数据', 'error');
       return;
     }
 
@@ -533,9 +537,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Java模型生成按钮点击事件
   javaModelBtn.addEventListener("click", () => {
-    // 检查是否有有效的JSON数据
-    if (!viewer.jsonData) {
-      showNotification(__("jsonEmpty") || "请先输入有效的JSON数据", "error");
+    // 获取当前JSON数据
+    const jsonData = getCurrentJsonData();
+
+    // 确保数据有效
+    if (!jsonData) {
+      showNotification(i18n.getMessage('invalidJson') || '无效的JSON数据', 'error');
       return;
     }
 
@@ -552,4 +559,49 @@ document.addEventListener("DOMContentLoaded", () => {
       showNotification(__("javaModelGenerateError", error.message) || `生成Java模型失败: ${error.message}`, "error");
     }
   });
-}); 
+
+  // Kotlin模型生成按钮点击事件
+  kotlinModelBtn.addEventListener("click", () => {
+    // 获取当前JSON数据
+    const jsonData = getCurrentJsonData();
+
+    // 确保数据有效
+    if (!jsonData) {
+      showNotification(i18n.getMessage('invalidJson') || '无效的JSON数据', 'error');
+      return;
+    }
+
+    // 显示Kotlin模型对话框
+    if (window.kotlinModelDialog) {
+      window.kotlinModelDialog.show(jsonData);
+    } else {
+      console.error('Kotlin模型对话框未初始化');
+      showNotification('Kotlin模型生成器未加载', 'error');
+    }
+  });
+});
+
+/**
+ * 获取当前输入或格式化后的JSON数据
+ * @returns {Object|null} 解析后的JSON对象，或者null（如果解析失败）
+ */
+function getCurrentJsonData() {
+  try {
+    // 尝试从JSON查看器获取数据（如果已格式化）
+    const jsonViewer = document.getElementById('jsonViewer');
+    if (jsonViewer && jsonViewer.hasAttribute('data-json')) {
+      return JSON.parse(jsonViewer.getAttribute('data-json'));
+    }
+
+    // 从输入区域获取数据
+    const jsonInput = document.getElementById('jsonInput');
+    if (jsonInput && jsonInput.value.trim()) {
+      return JSON.parse(jsonInput.value);
+    }
+
+    return null;
+  } catch (error) {
+    console.error('解析JSON失败', error);
+    return null;
+  }
+} 

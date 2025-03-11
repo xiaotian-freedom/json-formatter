@@ -32,7 +32,7 @@ class TypeScriptModelDialog {
         // 添加对话框内容
         this.dialog.innerHTML = `
             <div class="common-dialog-header">  
-                <h2>${this.getMessage('tsModelGenerator') || 'TypeScript 模型生成器'}</h2>
+                <h2 data-i18n="tsModelGenerator">TypeScript 模型生成器</h2>
                 <button id="closeDialogBtn" class="common-close-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 6L6 18M6 6l12 12"></path>
@@ -102,16 +102,16 @@ class TypeScriptModelDialog {
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
-                        复制代码
+                        <span data-i18n="copyTsCode">复制代码</span>
                     </button>
                     <button id="regenerateBtn" class="glass-btn" data-i18n="regenerate">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
                         </svg>
-                        重新生成
+                        <span data-i18n="regenerate">重新生成</span>
                     </button>
                     <button id="closeDialogBtnBottom" class="glass-btn" data-i18n="close">
-                        关闭
+                        <span data-i18n="close">关闭</span>
                     </button>
                 </div>
             </div>
@@ -219,12 +219,15 @@ class TypeScriptModelDialog {
         // 验证JSON数据
         if (!this.jsonData) {
             console.error('没有可用的JSON数据');
-            alert('没有提供有效的JSON数据，无法生成模型');
+            alert(this.getMessage('noValidJson') || '没有提供有效的JSON数据，无法生成模型');
             return;
         }
 
         // 应用当前主题
         this.applyTheme();
+
+        // 翻译对话框元素
+        this.translateDialogElements();
 
         // 添加到文档（如果尚未添加）
         if (!document.body.contains(this.overlay)) {
@@ -334,7 +337,7 @@ class TypeScriptModelDialog {
      */
     generateTsModel() {
         if (!this.jsonData) {
-            this.codeOutput.textContent = '// 错误：没有提供JSON数据';
+            this.codeOutput.textContent = this.getMessage('errorNoJsonData') || '// 错误：没有提供JSON数据';
             return;
         }
 
@@ -346,7 +349,7 @@ class TypeScriptModelDialog {
                 Object.keys(this.jsonData).length === 0);
 
         if (isEmpty) {
-            this.codeOutput.textContent = '// 错误：JSON数据为空对象或空数组';
+            this.codeOutput.textContent = this.getMessage('errorEmptyJson') || '// 错误：JSON数据为空对象或空数组';
             return;
         }
 
