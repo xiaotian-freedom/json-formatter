@@ -85,10 +85,10 @@
 
 如果您觉得这个工具对您有所帮助，欢迎给我买杯咖啡支持项目的持续开发！
 
-<table>
+<table width="100%">
   <tr>
-    <td align="center"><img src="https://s21.ax1x.com/2025/03/11/pENbeiD.jpg" width="200px" alt="微信收款码"></td>
-    <td align="center"><img src="https://s21.ax1x.com/2025/03/11/pENbmJe.jpg" width="200px" alt="支付宝收款码"></td>
+    <td align="center" width="50%"><img src="https://s21.ax1x.com/2025/03/11/pENbeiD.jpg" width="200px" alt="微信收款码"></td>
+    <td align="center" width="50%"><img src="https://s21.ax1x.com/2025/03/11/pENbmJe.jpg" width="200px" alt="支付宝收款码"></td>
   </tr>
 </table>
 
