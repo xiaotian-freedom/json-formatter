@@ -86,9 +86,9 @@
 如果您觉得这个工具对您有所帮助，欢迎给我买杯咖啡支持项目的持续开发！
 
 ### 微信支付
-![微信收款码]("https://imgse.com/i/pENbeiD")
+![微信收款码](https://s21.ax1x.com/2025/03/11/pENbeiD.jpg)
 
 ### 支付宝
-![支付宝收款码](https://imgse.com/i/pENbmJe)
+![支付宝收款码](https://s21.ax1x.com/2025/03/11/pENbmJe.jpg)
 
 非常感谢您的支持！
