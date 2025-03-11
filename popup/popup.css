@@ -190,7 +190,7 @@ textarea:focus {
 /* 玻璃拟态风格输出区域 - 右侧 */
 .output-area {
   flex: 1; /* 初始等分空间 */
-  padding: 20px 24px;
+  padding: 10px 24px;
   overflow: auto;
   background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.5);
   backdrop-filter: blur(8px);
@@ -201,7 +201,6 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   min-height: 200px;
-  padding-bottom: 15px;
 }
 
 .output-area::-webkit-scrollbar {
@@ -583,8 +582,7 @@ input:checked + .toggle-slider:before {
   display: flex;
   justify-content: center;
   gap: 16px;
-  /* margin-top: 20px; */
-  padding: 10px; /* 移除左右内边距 */
+  padding: 10px; 
   overflow-x: auto;
   white-space: nowrap;
   padding-bottom: 5px;

@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeToggle = document.getElementById("themeToggle");
   const autoFormatToggle = document.getElementById("autoFormatToggle");
   const tsModelBtn = document.getElementById("tsModelBtn");
+  const javaModelBtn = document.getElementById("javaModelBtn");
 
   // 创建JSON查看器实例
   const viewer = new JsonViewer(jsonViewer);
@@ -527,6 +528,28 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("TS模型生成错误:", error);
       showNotification(__("tsModelGenerateError", error.message) || `生成TS模型失败: ${error.message}`, "error");
+    }
+  });
+
+  // Java模型生成按钮点击事件
+  javaModelBtn.addEventListener("click", () => {
+    // 检查是否有有效的JSON数据
+    if (!viewer.jsonData) {
+      showNotification(__("jsonEmpty") || "请先输入有效的JSON数据", "error");
+      return;
+    }
+
+    try {
+      // 显示Java模型对话框
+      if (window.javaModelDialog) {
+        // 传递当前JSON数据
+        window.javaModelDialog.show(viewer.jsonData);
+      } else {
+        showNotification(__("javaModelError") || "Java模型生成器初始化失败", "error");
+      }
+    } catch (error) {
+      console.error("Java模型生成错误:", error);
+      showNotification(__("javaModelGenerateError", error.message) || `生成Java模型失败: ${error.message}`, "error");
     }
   });
 }); 

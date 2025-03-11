@@ -129,6 +129,10 @@
     "message": "TS模型",
     "description": "生成TypeScript模型按钮文本"
   },
+  "generateJavaModel": {
+    "message": "Java模型",
+    "description": "生成Java模型按钮文本"
+  },
   "tsModelTitle": {
     "message": "生成TypeScript模型",
     "description": "TS模型对话框标题"

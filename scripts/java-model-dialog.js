@@ -1,8 +1,8 @@
 /**
- * TypeScript 模型对话框管理器
- * 处理TS模型生成界面交互
+ * Java模型对话框管理器
+ * 处理Java模型生成界面交互
  */
-class TypeScriptModelDialog {
+class JavaModelDialog {
     constructor() {
         // 创建对话框元素
         this.createDialogElement();
@@ -31,8 +31,8 @@ class TypeScriptModelDialog {
 
         // 添加对话框内容
         this.dialog.innerHTML = `
-            <div class="common-dialog-header">  
-                <h2>${this.getMessage('tsModelGenerator') || 'TypeScript 模型生成器'}</h2>
+            <div class="common-dialog-header">
+                <h2>${this.getMessage('javaModelGenerator') || 'Java 模型生成器'}</h2>
                 <button id="closeDialogBtn" class="common-close-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 6L6 18M6 6l12 12"></path>
@@ -44,44 +44,34 @@ class TypeScriptModelDialog {
                 <div class="common-settings-panel">
                     <div class="common-setting-group">
                         <div class="common-setting-item">
-                            <input type="text" id="rootInterfaceName" value="RootObject" class="common-setting-input">
-                            <label for="rootInterfaceName" data-i18n="rootInterfaceName">根接口名称</label>
+                            <input type="text" id="packageName" placeholder="com.example.model" class="common-setting-input">
+                            <label for="packageName" data-i18n="packageName">包名</label>
                         </div>
                         <div class="common-setting-item">
-                            <select id="unknownType" class="common-setting-select">
-                                <option value="any">any</option>
-                                <option value="unknown">unknown</option>
-                            </select>
-                            <label for="unknownType" data-i18n="unknownType">未知类型</label>
+                            <input type="text" id="rootClassName" value="RootObject" class="common-setting-input">
+                            <label for="rootClassName" data-i18n="rootClassName">根类名</label>
                         </div>
                     </div>
                     
                     <div class="common-setting-group">
                         <div class="common-setting-item" style="margin-top: 5px;">
-                            <input type="checkbox" id="exportKeyword" checked>
-                            <label for="exportKeyword" data-i18n="exportKeyword">添加export关键字</label>
+                            <input type="checkbox" id="useGettersSetters" checked>
+                            <label for="useGettersSetters" data-i18n="useGettersSetters">生成Getter/Setter</label>
                         </div>
                         <div class="common-setting-item" style="margin-bottom: 5px;">
-                            <input type="checkbox" id="useType">
-                            <label for="useType" data-i18n="useType">使用type代替interface</label>
+                            <input type="checkbox" id="useLombok">
+                            <label for="useLombok" data-i18n="useLombok">使用Lombok注解</label>
                         </div>
                     </div>
                     
                     <div class="common-setting-group">
                         <div class="common-setting-item" style="margin-top: 5px;">
-                            <input type="checkbox" id="optionalProps">
-                            <label for="optionalProps" data-i18n="optionalProps">可选属性</label>
+                            <input type="checkbox" id="useJacksonAnnotations">
+                            <label for="useJacksonAnnotations" data-i18n="useJacksonAnnotations">添加Jackson注解</label>
                         </div>
                         <div class="common-setting-item" style="margin-bottom: 5px;">
-                            <input type="checkbox" id="semicolons" checked>
-                            <label for="semicolons" data-i18n="semicolons">使用分号</label>
-                        </div>
-                    </div>
-                    
-                    <div class="common-setting-group">
-                        <div class="common-setting-item" style="margin-top: 5px;">
-                            <input type="checkbox" id="usePascalCase" checked>
-                            <label for="usePascalCase" data-i18n="usePascalCase">PascalCase接口名</label>
+                            <input type="checkbox" id="generateBuilders">
+                            <label for="generateBuilders" data-i18n="generateBuilders">生成Builder模式</label>
                         </div>
                     </div>
                 </div>
@@ -89,7 +79,7 @@ class TypeScriptModelDialog {
                 <div class="common-content-area">
                     <div class="common-code-container">
                         <div class="common-code-editor">
-                            <pre id="tsCodeOutput" class="common-code"></pre>
+                            <pre id="javaCodeOutput" class="common-code"></pre>
                         </div>
                     </div>
                 </div>
@@ -97,7 +87,7 @@ class TypeScriptModelDialog {
             
             <div class="common-dialog-footer">
                 <div class="common-dialog-actions">
-                    <button id="copyTsCodeBtn" class="glass-btn" data-i18n="copyTsCode">
+                    <button id="copyJavaCodeBtn" class="glass-btn" data-i18n="copyJavaCode">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -131,20 +121,19 @@ class TypeScriptModelDialog {
         // 获取按钮和输入元素引用
         this.closeDialogBtn = this.dialog.querySelector('#closeDialogBtn');
         this.closeDialogBtnBottom = this.dialog.querySelector('#closeDialogBtnBottom');
-        this.copyTsCodeBtn = this.dialog.querySelector('#copyTsCodeBtn');
+        this.copyJavaCodeBtn = this.dialog.querySelector('#copyJavaCodeBtn');
         this.regenerateBtn = this.dialog.querySelector('#regenerateBtn');
 
         // 获取设置输入元素
-        this.rootInterfaceNameInput = this.dialog.querySelector('#rootInterfaceName');
-        this.exportKeywordInput = this.dialog.querySelector('#exportKeyword');
-        this.useTypeInput = this.dialog.querySelector('#useType');
-        this.optionalPropsInput = this.dialog.querySelector('#optionalProps');
-        this.semicolonsInput = this.dialog.querySelector('#semicolons');
-        this.usePascalCaseInput = this.dialog.querySelector('#usePascalCase');
-        this.unknownTypeInput = this.dialog.querySelector('#unknownType');
+        this.packageNameInput = this.dialog.querySelector('#packageName');
+        this.rootClassNameInput = this.dialog.querySelector('#rootClassName');
+        this.useGettersSettersInput = this.dialog.querySelector('#useGettersSetters');
+        this.useLombokInput = this.dialog.querySelector('#useLombok');
+        this.useJacksonAnnotationsInput = this.dialog.querySelector('#useJacksonAnnotations');
+        this.generateBuildersInput = this.dialog.querySelector('#generateBuilders');
 
         // 代码输出区域
-        this.codeOutput = this.dialog.querySelector('#tsCodeOutput');
+        this.codeOutput = this.dialog.querySelector('#javaCodeOutput');
     }
 
     /**
@@ -170,7 +159,7 @@ class TypeScriptModelDialog {
             }
 
             // 复制代码按钮
-            if (e.target.id === 'copyTsCodeBtn' || e.target.closest('#copyTsCodeBtn')) {
+            if (e.target.id === 'copyJavaCodeBtn' || e.target.closest('#copyJavaCodeBtn')) {
                 this.copyToClipboard();
                 return;
             }
@@ -192,8 +181,12 @@ class TypeScriptModelDialog {
                 }
             });
 
-            // 监听文本输入事件（仅适用于根接口名称）
-            this.rootInterfaceNameInput.addEventListener('input', () => {
+            // 监听文本输入事件
+            this.packageNameInput.addEventListener('input', () => {
+                this.regenerate();
+            });
+
+            this.rootClassNameInput.addEventListener('input', () => {
                 this.regenerate();
             });
         }
@@ -207,8 +200,8 @@ class TypeScriptModelDialog {
     }
 
     /**
-     * 显示TS模型对话框
-     * @param {Object} jsonData - 要转换的JSON数据
+     * 显示对话框
+     * @param {Object} jsonData - 要转换为Java模型的JSON数据
      */
     show(jsonData) {
         // 只有当提供了新数据时才更新
@@ -241,9 +234,9 @@ class TypeScriptModelDialog {
         // 恢复之前的设置
         this.restoreSettings();
 
-        // 生成TS模型
+        // 生成Java模型
         setTimeout(() => {
-            this.generateTsModel();
+            this.generateJavaModel();
         }, 50);
     }
 
@@ -291,11 +284,9 @@ class TypeScriptModelDialog {
     }
 
     /**
-     * 隐藏TS模型对话框
+     * 隐藏对话框
      */
     hide() {
-        console.log('隐藏TS模型对话框，应用关闭动画');
-
         // 保存当前设置
         this.saveSettings();
 
@@ -330,9 +321,9 @@ class TypeScriptModelDialog {
     }
 
     /**
-     * 生成TypeScript模型
+     * 生成Java模型
      */
-    generateTsModel() {
+    generateJavaModel() {
         if (!this.jsonData) {
             this.codeOutput.textContent = '// 错误：没有提供JSON数据';
             return;
@@ -352,23 +343,23 @@ class TypeScriptModelDialog {
 
         // 获取当前配置
         const config = {
-            rootInterfaceName: this.rootInterfaceNameInput.value || 'RootObject',
-            optional: this.optionalPropsInput.checked,
-            useType: this.useTypeInput.checked,
-            exportKeyword: this.exportKeywordInput.checked,
-            usePascalCase: this.usePascalCaseInput.checked,
-            semicolons: this.semicolonsInput.checked,
-            unknownType: this.unknownTypeInput.value || 'any',
-            optimizeInterfaces: true // 启用接口优化
+            packageName: this.packageNameInput.value,
+            rootClassName: this.rootClassNameInput.value || 'RootObject',
+            useGettersSetters: this.useGettersSettersInput.checked,
+            useLombok: this.useLombokInput.checked,
+            useJacksonAnnotations: this.useJacksonAnnotationsInput.checked,
+            generateBuilders: this.generateBuildersInput.checked
         };
 
+        console.log('config', config);
+
         try {
-            // 使用TS模型生成器生成代码
-            if (!window.tsModelGenerator) {
-                throw new Error('TS模型生成器未初始化');
+            // 使用Java模型生成器生成代码
+            if (!window.javaModelGenerator) {
+                throw new Error('Java模型生成器未初始化');
             }
 
-            const code = window.tsModelGenerator.generate(this.jsonData, config);
+            const code = window.javaModelGenerator.generate(this.jsonData, config);
 
             if (!code || code.length === 0) {
                 throw new Error('生成的代码为空');
@@ -377,70 +368,141 @@ class TypeScriptModelDialog {
             // 显示生成的代码（包含语法高亮）
             this.setCodeWithHighlight(code);
         } catch (error) {
-            console.error('生成TS模型失败:', error);
+            console.error('生成Java模型失败:', error);
             // 显示错误信息
             this.codeOutput.textContent = `// 生成失败: ${error.message}`;
         }
     }
 
     /**
-     * 设置带有语法高亮的代码
-     */
-    setCodeWithHighlight(code) {
-        // 检查代码输出元素是否存在
-        if (!this.codeOutput) return;
-
-        // 分割代码行
-        const lines = code.split('\n');
-
-        // 清空内容
-        this.codeOutput.innerHTML = '';
-
-        // 添加每一行并应用高亮，不添加行号
-        lines.forEach((line) => {
-            const lineElement = document.createElement('div');
-            lineElement.className = 'common-code-line';
-            // 保留空行，确保格式正确
-            lineElement.innerHTML = line.trim() ? this.highlighter(line) : '&nbsp;';
-            this.codeOutput.appendChild(lineElement);
-        });
-
-        // 保存原始格式化代码作为数据属性，作为备份
-        this.codeOutput.setAttribute('data-original-code', code);
-    }
-
-    /**
      * 创建语法高亮函数
      */
     createHighlighter() {
-        // 基本的TypeScript语法规则
-        const patterns = [
-            // 关键字
-            { pattern: /\b(interface|type|export|extends|implements|readonly|import|from)\b/g, className: 'common-keyword' },
-            // 接口名称
-            { pattern: /\b([A-Z][a-zA-Z0-9]*)\b(?=\s*(\{|\=))/g, className: 'common-interface' },
-            // 属性名称
-            { pattern: /([a-zA-Z0-9_']+)(?=\s*\??:)/g, className: 'common-property' },
-            // 类型
-            { pattern: /:\s*([A-Z][a-zA-Z0-9]*|\b(string|number|boolean|any|null|undefined|unknown|void|never|object|symbol|bigint|Record|Date|ReactNode)\b)(\[\])?/g, className: 'common-type' },
-            // 字符串
-            { pattern: /'([^']*)'/g, className: 'common-string' },
-            // 注释
-            { pattern: /(\/\/.*|\/\*[\s\S]*?\*\/)/g, className: 'common-comment' }
-        ];
-
         // 返回高亮函数
         return (code) => {
-            let highlightedCode = code;
+            // 对HTML特殊字符进行转义，防止XSS
+            const escapedCode = code.replace(/[&<>"']/g,
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[tag]));
 
-            for (const { pattern, className } of patterns) {
-                highlightedCode = highlightedCode.replace(pattern, (match) => {
-                    return `<span class="${className}">${match}</span>`;
-                });
+            // 定义Java语法规则
+            const patternMap = [
+                // 关键字
+                { pattern: /\b(public|private|protected|class|interface|extends|implements|static|final|abstract|import|package|throws|throw|try|catch|finally)\b/g, className: 'common-keyword' },
+                // 基本类型和常用引用类型 - 使用新的类名避免斜体
+                { pattern: /\b(void|int|double|boolean|String|Object|List|Map|Set|Date|Integer|Double|Boolean|Float|Long|Short|Byte|char)\b/g, className: 'common-type-normal' },
+                // 注解
+                { pattern: /@\w+/g, className: 'common-java-annotation' },
+                // 用户定义类型
+                { pattern: /\b([A-Z][a-zA-Z0-9]*)\b(?=\s*(\{|extends|implements))/g, className: 'common-type' },
+                // 方法名
+                { pattern: /\b([a-z][a-zA-Z0-9]*)\s*\(/g, className: 'common-method' },
+                // 字符串
+                { pattern: /"([^"]*)"|'([^']*)'/g, className: 'common-string' },
+                // 注释
+                { pattern: /(\/\/.*|\/\*[\s\S]*?\*\/)/g, className: 'common-comment' }
+            ];
+
+            // 存储所有需要高亮的范围
+            let ranges = [];
+
+            // 找出所有需要高亮的范围
+            patternMap.forEach(({ pattern, className }) => {
+                let match;
+                pattern.lastIndex = 0; // 重置正则表达式
+
+                while ((match = pattern.exec(escapedCode)) !== null) {
+                    ranges.push({
+                        start: match.index,
+                        end: match.index + match[0].length,
+                        className: className
+                    });
+                }
+            });
+
+            // 按开始位置排序
+            ranges.sort((a, b) => a.start - b.start);
+
+            // 合并重叠的范围
+            for (let i = 0; i < ranges.length - 1; i++) {
+                if (ranges[i + 1].start < ranges[i].end) {
+                    // 重叠了，移除后面的
+                    ranges.splice(i + 1, 1);
+                    i--; // 重新检查当前索引
+                }
             }
 
-            return highlightedCode;
+            // 添加高亮标签
+            let result = '';
+            let lastEnd = 0;
+
+            ranges.forEach(range => {
+                // 添加未高亮的部分
+                if (range.start > lastEnd) {
+                    result += escapedCode.substring(lastEnd, range.start);
+                }
+
+                // 添加高亮部分
+                result += `<span class="${range.className}">` +
+                    escapedCode.substring(range.start, range.end) +
+                    '</span>';
+
+                lastEnd = range.end;
+            });
+
+            // 添加剩余未高亮的部分
+            if (lastEnd < escapedCode.length) {
+                result += escapedCode.substring(lastEnd);
+            }
+
+            return result;
         };
+    }
+
+    /**
+     * 设置带有语法高亮的代码
+     */
+    setCodeWithHighlight(code) {
+        if (!this.codeOutput) return;
+
+        try {
+            // 应用高亮
+            const highlightedCode = this.highlighter(code);
+
+            // 添加行处理
+            const lines = highlightedCode.split('\n');
+            const fragment = document.createDocumentFragment();
+
+            lines.forEach(line => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'common-code-line';
+
+                if (line.trim()) {
+                    lineDiv.innerHTML = line;
+                } else {
+                    lineDiv.innerHTML = '&nbsp;';
+                }
+
+                fragment.appendChild(lineDiv);
+            });
+
+            // 清空并添加新内容
+            this.codeOutput.innerHTML = '';
+            this.codeOutput.appendChild(fragment);
+
+            console.log('高亮处理完成，行数:', lines.length);
+        } catch (error) {
+            console.error('代码高亮失败:', error);
+            this.codeOutput.textContent = code;
+        }
+
+        // 保存原始代码
+        this.codeOutput.setAttribute('data-original-code', code);
     }
 
     /**
@@ -481,7 +543,7 @@ class TypeScriptModelDialog {
             navigator.clipboard.writeText(code)
                 .then(() => {
                     // 使用全局通知函数
-                    showNotification(this.getMessage('tsCodeCopied') || '代码已复制到剪贴板', 'success');
+                    showNotification(this.getMessage('javaCodeCopied') || '代码已复制到剪贴板', 'success');
                 })
                 .catch(err => {
                     console.error('复制失败:', err);
@@ -514,13 +576,13 @@ class TypeScriptModelDialog {
             const successful = document.execCommand('copy');
             if (successful) {
                 // 使用全局通知函数
-                showNotification(this.getMessage('tsCodeCopied') || '代码已复制到剪贴板', 'success');
+                showNotification(this.getMessage('javaCodeCopied') || '代码已复制到剪贴板', 'success');
             } else {
-                showNotification(this.getMessage('tsCopyFailed') || '复制失败', 'error');
+                showNotification(this.getMessage('javaCopyFailed') || '复制失败', 'error');
             }
         } catch (err) {
             console.error('备用复制方法失败:', err);
-            showNotification(this.getMessage('tsCopyFailed') || '复制失败', 'error');
+            showNotification(this.getMessage('javaCopyFailed') || '复制失败', 'error');
         } finally {
             // 清理
             document.body.removeChild(textarea);
@@ -528,7 +590,7 @@ class TypeScriptModelDialog {
     }
 
     /**
-     * 重新生成TS模型
+     * 重新生成Java模型
      */
     regenerate() {
         // 保存当前的滚动位置
@@ -538,8 +600,8 @@ class TypeScriptModelDialog {
         // 创建并触发Siri风格动画
         this.playSiriAnimation();
 
-        // 生成TS模型
-        this.generateTsModel();
+        // 生成Java模型
+        this.generateJavaModel();
 
         // 恢复滚动位置
         setTimeout(() => {
@@ -608,19 +670,18 @@ class TypeScriptModelDialog {
      */
     saveSettings() {
         const settings = {
-            rootInterfaceName: this.rootInterfaceNameInput.value,
-            exportKeyword: this.exportKeywordInput.checked,
-            useType: this.useTypeInput.checked,
-            optionalProps: this.optionalPropsInput.checked,
-            semicolons: this.semicolonsInput.checked,
-            usePascalCase: this.usePascalCaseInput.checked,
-            unknownType: this.unknownTypeInput.value
+            packageName: this.packageNameInput.value,
+            rootClassName: this.rootClassNameInput.value,
+            useGettersSetters: this.useGettersSettersInput.checked,
+            useLombok: this.useLombokInput.checked,
+            useJacksonAnnotations: this.useJacksonAnnotationsInput.checked,
+            generateBuilders: this.generateBuildersInput.checked
         };
 
         try {
-            localStorage.setItem('common-model-settings', JSON.stringify(settings));
+            localStorage.setItem('java-model-settings', JSON.stringify(settings));
         } catch (e) {
-            console.warn('无法保存TS模型设置', e);
+            console.warn('无法保存Java模型设置', e);
         }
     }
 
@@ -629,21 +690,20 @@ class TypeScriptModelDialog {
      */
     restoreSettings() {
         try {
-            const savedSettings = localStorage.getItem('common-model-settings');
+            const savedSettings = localStorage.getItem('java-model-settings');
             if (savedSettings) {
                 const settings = JSON.parse(savedSettings);
 
                 // 恢复设置值
-                if (settings.rootInterfaceName) this.rootInterfaceNameInput.value = settings.rootInterfaceName;
-                if (settings.exportKeyword !== undefined) this.exportKeywordInput.checked = settings.exportKeyword;
-                if (settings.useType !== undefined) this.useTypeInput.checked = settings.useType;
-                if (settings.optionalProps !== undefined) this.optionalPropsInput.checked = settings.optionalProps;
-                if (settings.semicolons !== undefined) this.semicolonsInput.checked = settings.semicolons;
-                if (settings.usePascalCase !== undefined) this.usePascalCaseInput.checked = settings.usePascalCase;
-                if (settings.unknownType) this.unknownTypeInput.value = settings.unknownType;
+                if (settings.packageName !== undefined) this.packageNameInput.value = settings.packageName;
+                if (settings.rootClassName) this.rootClassNameInput.value = settings.rootClassName;
+                if (settings.useGettersSetters !== undefined) this.useGettersSettersInput.checked = settings.useGettersSetters;
+                if (settings.useLombok !== undefined) this.useLombokInput.checked = settings.useLombok;
+                if (settings.useJacksonAnnotations !== undefined) this.useJacksonAnnotationsInput.checked = settings.useJacksonAnnotations;
+                if (settings.generateBuilders !== undefined) this.generateBuildersInput.checked = settings.generateBuilders;
             }
         } catch (e) {
-            console.warn('无法恢复TS模型设置', e);
+            console.warn('无法恢复Java模型设置', e);
         }
     }
 
@@ -714,7 +774,7 @@ class TypeScriptModelDialog {
     }
 }
 
-// 在页面加载后初始化TS模型对话框
+// 在页面加载后初始化Java模型对话框
 document.addEventListener('DOMContentLoaded', () => {
     // 加载CSS
     const linkElement = document.createElement('link');
@@ -722,6 +782,6 @@ document.addEventListener('DOMContentLoaded', () => {
     linkElement.href = chrome.runtime.getURL('styles/common-model-dialog.css');
     document.head.appendChild(linkElement);
 
-    // 初始化TS模型对话框
-    window.tsModelDialog = new TypeScriptModelDialog();
-}); 
+    // 初始化Java模型对话框
+    window.javaModelDialog = new JavaModelDialog();
+});

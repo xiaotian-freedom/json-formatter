@@ -129,6 +129,10 @@
     "message": "TS Model",
     "description": "Generate TypeScript model button text"
   },
+  "generateJavaModel": {
+    "message": "Java Model",
+    "description": "Generate Java model button text"
+  },
   "tsModelTitle": {
     "message": "Generate TypeScript Model",
     "description": "TS model dialog title"
