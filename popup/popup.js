@@ -579,6 +579,24 @@ document.addEventListener("DOMContentLoaded", () => {
       showNotification('Kotlin模型生成器未加载', 'error');
     }
   });
+
+  // JSONPath切换按钮
+  const jsonPathToggle = document.getElementById("jsonPathToggle");
+
+  // 添加切换事件
+  jsonPathToggle.addEventListener("change", () => {
+    viewer.toggleJsonPath(jsonPathToggle.checked);
+    // 保存设置
+    chrome.storage.sync.set({ "showJsonPath": jsonPathToggle.checked });
+  });
+
+  // 加载保存的路径显示设置
+  chrome.storage.sync.get("showJsonPath", (data) => {
+    if (data.showJsonPath === false) {
+      jsonPathToggle.checked = false;
+      viewer.toggleJsonPath(false);
+    }
+  });
 });
 
 /**

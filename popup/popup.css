@@ -1,5 +1,6 @@
 /* 现代化高级UI设计 - 左右布局模式（桌面优化版） */
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -9,7 +10,9 @@ body, html {
   box-sizing: border-box;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -28,9 +31,11 @@ body {
   display: flex;
   flex-direction: column;
   width: calc(100vw - 40px);
-  height: calc(100vh - 40px); /* 动态高度，减去上下边距 */
+  height: calc(100vh - 40px);
+  /* 动态高度，减去上下边距 */
   min-width: 800px;
-  min-height: 600px; /* 设置最小高度 */
+  min-height: 600px;
+  /* 设置最小高度 */
   position: relative;
   overflow: hidden;
   border-radius: 12px;
@@ -55,12 +60,12 @@ body:before {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at top right, 
-    rgba(var(--accent-rgb, 66, 133, 244), 0.08) 0%, 
-    transparent 50%),
-    radial-gradient(circle at bottom left, 
-    rgba(var(--secondary-rgb, 255, 64, 129), 0.08) 0%, 
-    transparent 50%);
+  background: radial-gradient(circle at top right,
+      rgba(var(--accent-rgb, 66, 133, 244), 0.08) 0%,
+      transparent 50%),
+    radial-gradient(circle at bottom left,
+      rgba(var(--secondary-rgb, 255, 64, 129), 0.08) 0%,
+      transparent 50%);
   z-index: -1;
   pointer-events: none;
 }
@@ -107,14 +112,16 @@ header h1 {
   background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.6);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  flex: 1; /* 初始等分空间 */
+  flex: 1;
+  /* 初始等分空间 */
   border-right: 1px solid rgba(var(--border-rgb, 222, 226, 230), 0.2);
   overflow: hidden;
 }
 
 textarea {
   width: 100%;
-  height: calc(100% - 50px); /* 给按钮留出空间 */
+  height: calc(100% - 50px);
+  /* 给按钮留出空间 */
   resize: none;
   border: 1px solid rgba(var(--border-rgb, 222, 226, 230), 0.3);
   border-radius: 8px;
@@ -146,7 +153,8 @@ textarea:focus {
   letter-spacing: 0.3px;
   box-shadow: 0 4px 12px rgba(var(--accent-rgb, 66, 133, 244), 0.3);
   transition: transform 0.3s, box-shadow 0.3s;
-  isolation: isolate; /* 创建新的层叠上下文 */
+  isolation: isolate;
+  /* 创建新的层叠上下文 */
 }
 
 #formatBtn:hover {
@@ -159,12 +167,15 @@ textarea:focus {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 5px; /* 初始宽度 */
-  height: 100%; /* 高度与按钮相同 */
+  width: 5px;
+  /* 初始宽度 */
+  height: 100%;
+  /* 高度与按钮相同 */
   background-color: rgba(255, 255, 255, 0.7);
   opacity: 0;
   transform: translate(-50%, -50%);
-  pointer-events: none; /* 确保不会干扰点击事件 */
+  pointer-events: none;
+  /* 确保不会干扰点击事件 */
 }
 
 #formatBtn:active::after {
@@ -176,9 +187,11 @@ textarea:focus {
     opacity: 1;
     width: 5px;
   }
+
   100% {
     opacity: 0;
-    width: 200%; /* 扩散到超过按钮宽度 */
+    width: 200%;
+    /* 扩散到超过按钮宽度 */
   }
 }
 
@@ -189,7 +202,8 @@ textarea:focus {
 
 /* 玻璃拟态风格输出区域 - 右侧 */
 .output-area {
-  flex: 1; /* 初始等分空间 */
+  flex: 1;
+  /* 初始等分空间 */
   padding: 10px 24px;
   overflow: auto;
   background: rgba(var(--card-bg-rgb, 255, 255, 255), 0.5);
@@ -269,7 +283,10 @@ button:active {
 }
 
 /* 工具栏按钮图标 */
-#copyBtn::before, #downloadBtn::before, #expandAllBtn::before, #collapseAllBtn::before {
+#copyBtn::before,
+#downloadBtn::before,
+#expandAllBtn::before,
+#collapseAllBtn::before {
   content: "";
   display: inline-block;
   width: 16px;
@@ -341,11 +358,11 @@ button:active {
   transition: 0.4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background: rgba(var(--accent-rgb, 66, 133, 244), 0.5);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(26px);
   background-color: #272c35;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23bbdefb'%3E%3Cpath d='M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.06 7 9.54s-2.94 8.27-7 9.54c.95.3 1.95.46 3 .46 5.52 0 10-4.48 10-10S14.52 2 9 2z'/%3E%3C/svg%3E");
@@ -355,7 +372,8 @@ input:checked + .slider:before {
 }
 
 /* 微妙的背景装饰元素 */
-.container::before, .container::after {
+.container::before,
+.container::after {
   content: "";
   position: absolute;
   border-radius: 50%;
@@ -561,11 +579,11 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-input:checked + .toggle-slider {
+input:checked+.toggle-slider {
   background-color: var(--accent-color);
 }
 
-input:checked + .toggle-slider:before {
+input:checked+.toggle-slider:before {
   transform: translateX(20px);
 }
 
@@ -582,7 +600,7 @@ input:checked + .toggle-slider:before {
   display: flex;
   justify-content: center;
   gap: 16px;
-  padding: 10px; 
+  padding: 10px;
   overflow-x: auto;
   white-space: nowrap;
   padding-bottom: 5px;
@@ -590,7 +608,8 @@ input:checked + .toggle-slider:before {
   margin-left: auto;
   margin-right: auto;
   /* 改善滚动体验 */
-  scroll-padding: 16px; /* 滚动对齐边距 */
+  scroll-padding: 16px;
+  /* 滚动对齐边距 */
 }
 
 /* 自定义滚动条样式 */
@@ -790,9 +809,11 @@ input:checked + .toggle-slider:before {
   0% {
     box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
   }
@@ -803,6 +824,7 @@ input:checked + .toggle-slider:before {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -863,4 +885,61 @@ input:checked + .toggle-slider:before {
 
 .json-image-link:hover {
   color: var(--accent-color);
-} 
+}
+
+/* JSON路径样式 - 修改使其垂直居中 */
+.json-path {
+  display: inline-block;
+  margin-left: 10px;
+  color: #888;
+  font-size: 11px;
+  font-family: monospace;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 1px 4px;
+  border-radius: 3px;
+  user-select: all;
+  /* 允许用户选择路径文本 */
+  cursor: text;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  /* 确保垂直居中 */
+  line-height: normal;
+  /* 重置行高 */
+  position: relative;
+  top: -1px;
+  /* 微调位置 */
+}
+
+/* 暗色主题下的路径样式 */
+.dark-theme .json-path {
+  color: #aaa;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 悬停时显示完整路径 */
+.json-path:hover {
+  max-width: none;
+  z-index: 100;
+  position: relative;
+  top: -1px;
+  /* 保持与非悬停状态一致 */
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .json-path:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 路径切换按钮样式 */
+.json-path-toggle {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.json-path-toggle .switch-label {
+  margin-right: 8px;
+}

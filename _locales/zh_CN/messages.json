@@ -225,5 +225,8 @@
   },
   "copyKotlinCode": {
     "message": "复制Kotlin代码"
+  },
+  "showJsonPath": {
+    "message": "显示路径"
   }
 } 

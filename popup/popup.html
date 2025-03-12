@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>锦衣JSON</title>
@@ -8,13 +9,15 @@
   <link rel="stylesheet" href="../styles/animations.css">
   <link rel="stylesheet" href="../styles/glass-buttons.css">
 </head>
+
 <body class="light-theme">
   <div class="container">
     <header>
       <h1 data-i18n="appName">锦衣JSON</h1>
       <div class="toolbar">
         <button id="searchBtn" class="icon-btn" title="搜索">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
@@ -33,25 +36,35 @@
             <span class="toggle-slider"></span>
           </label>
         </div>
+
+        <!-- 添加JSONPath显示切换按钮 -->
+        <div class="json-path-toggle">
+          <label class="switch-label" data-i18n="showJsonPath">显示路径</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="jsonPathToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
         <label class="theme-switch">
           <input type="checkbox" id="themeToggle">
           <span class="slider round"></span>
         </label>
       </div>
     </header>
-    
+
     <div class="content-container">
       <div class="input-area">
         <textarea id="jsonInput" data-i18n-placeholder="inputPlaceholder" placeholder="请输入或粘贴JSON数据..."></textarea>
         <button id="formatBtn" data-i18n="formatJson">格式化</button>
       </div>
-      
+
       <div class="output-area">
         <div id="jsonViewer"></div>
         <div class="output-actions">
           <button id="tsModelBtn" class="glass-btn" data-i18n="generateTsModel" title="生成TypeScript模型">TS模型</button>
           <button id="javaModelBtn" class="glass-btn" data-i18n="generateJavaModel" title="生成Java模型">Java模型</button>
-          <button id="kotlinModelBtn" class="glass-btn" data-i18n="generateKotlinModel" title="生成Kotlin模型">Kotlin模型</button>
+          <button id="kotlinModelBtn" class="glass-btn" data-i18n="generateKotlinModel"
+            title="生成Kotlin模型">Kotlin模型</button>
           <button id="copyBtn" class="glass-btn" data-i18n="copy" title="复制">复制</button>
           <button id="downloadBtn" class="glass-btn" data-i18n="download" title="下载">下载</button>
           <button id="expandAllBtn" class="glass-btn" data-i18n="expand" title="全部展开">展开</button>
@@ -97,4 +110,5 @@
   <script src="../scripts/kotlin-model-dialog.js"></script>
   <script src="popup.js"></script>
 </body>
-</html> 
+
+</html>

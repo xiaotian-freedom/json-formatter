@@ -225,5 +225,8 @@
   },
   "copyKotlinCode": {
     "message": "Copy Kotlin Code"
+  },
+  "showJsonPath": {
+    "message": "Show JSON Path"
   }
 } 

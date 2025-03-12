@@ -3,6 +3,7 @@ class JsonViewer {
     this.targetElement = targetElement;
     this.jsonData = null;
     this.clickCallback = null;
+    this.showJsonPath = true; // 添加显示路径选项
   }
 
   // 加载并格式化JSON
@@ -20,15 +21,15 @@ class JsonViewer {
   // 渲染JSON树
   render() {
     this.targetElement.innerHTML = "";
-    const tree = this.createTree(this.jsonData);
+    const tree = this.createTree(this.jsonData, null, true, "$");
     this.targetElement.appendChild(tree);
 
     // 添加进入动画
     this.addEntranceAnimation(this.targetElement);
   }
 
-  // 创建JSON树结构
-  createTree(data, key = null, isLast = true) {
+  // 创建JSON树结构 - 添加path参数
+  createTree(data, key = null, isLast = true, path = "$") {
     const container = document.createElement("div");
     container.className = "json-item";
 
@@ -41,18 +42,18 @@ class JsonViewer {
 
     // 根据数据类型创建不同的显示元素
     if (Array.isArray(data)) {
-      this.createArrayView(container, data, isLast);
+      this.createArrayView(container, data, isLast, path);
     } else if (data !== null && typeof data === "object") {
-      this.createObjectView(container, data, isLast);
+      this.createObjectView(container, data, isLast, path);
     } else {
-      this.createPrimitiveView(container, data, isLast);
+      this.createPrimitiveView(container, data, isLast, path);
     }
 
     return container;
   }
 
-  // 创建对象视图
-  createObjectView(container, data, isLast) {
+  // 创建对象视图 - 添加路径参数
+  createObjectView(container, data, isLast, path) {
     const toggleBtn = document.createElement("span");
     toggleBtn.className = "toggle-btn expanded";
     toggleBtn.textContent = "";
@@ -63,13 +64,24 @@ class JsonViewer {
     startBrace.textContent = "{";
     container.appendChild(startBrace);
 
+    // 添加JSONPath显示
+    if (this.showJsonPath) {
+      const pathElement = document.createElement("span");
+      pathElement.className = "json-path";
+      pathElement.textContent = path;
+      pathElement.title = path;
+      container.appendChild(pathElement);
+    }
+
     const childContainer = document.createElement("div");
     childContainer.className = "json-children";
 
     const keys = Object.keys(data);
     keys.forEach((key, index) => {
       const isLastItem = index === keys.length - 1;
-      const childItem = this.createTree(data[key], key, isLastItem);
+      // 构建子节点的路径
+      const childPath = `${path}.${key}`;
+      const childItem = this.createTree(data[key], key, isLastItem, childPath);
       childContainer.appendChild(childItem);
     });
 
@@ -90,8 +102,8 @@ class JsonViewer {
     this.makeClickable(container, data);
   }
 
-  // 创建数组视图
-  createArrayView(container, data, isLast) {
+  // 创建数组视图 - 添加路径参数
+  createArrayView(container, data, isLast, path) {
     const toggleBtn = document.createElement("span");
     toggleBtn.className = "toggle-btn expanded";
     toggleBtn.textContent = "";
@@ -101,6 +113,15 @@ class JsonViewer {
     startBracket.className = "json-brace";
     startBracket.textContent = "[";
     container.appendChild(startBracket);
+
+    // 添加JSONPath显示
+    if (this.showJsonPath) {
+      const pathElement = document.createElement("span");
+      pathElement.className = "json-path";
+      pathElement.textContent = path;
+      pathElement.title = path;
+      container.appendChild(pathElement);
+    }
 
     const childContainer = document.createElement("div");
     childContainer.className = "json-children";
@@ -118,13 +139,16 @@ class JsonViewer {
       indexElement.textContent = `[${index}] `;
       itemContainer.appendChild(indexElement);
 
+      // 构建数组项的路径
+      const itemPath = `${path}[${index}]`;
+
       // 根据数组元素类型创建不同的视图
       if (Array.isArray(item)) {
-        this.createArrayView(itemContainer, item, isLastItem);
+        this.createArrayView(itemContainer, item, isLastItem, itemPath);
       } else if (item !== null && typeof item === "object") {
-        this.createObjectView(itemContainer, item, isLastItem);
+        this.createObjectView(itemContainer, item, isLastItem, itemPath);
       } else {
-        this.createPrimitiveView(itemContainer, item, isLastItem);
+        this.createPrimitiveView(itemContainer, item, isLastItem, itemPath);
       }
 
       childContainer.appendChild(itemContainer);
@@ -147,8 +171,8 @@ class JsonViewer {
     this.makeClickable(container, data);
   }
 
-  // 创建基本类型值的视图
-  createPrimitiveView(container, data, isLast) {
+  // 创建基本类型值的视图 - 添加路径参数
+  createPrimitiveView(container, data, isLast, path) {
     const valueElement = document.createElement("span");
 
     if (typeof data === "string") {
@@ -166,6 +190,15 @@ class JsonViewer {
     }
 
     container.appendChild(valueElement);
+
+    // 添加JSONPath显示
+    if (this.showJsonPath) {
+      const pathElement = document.createElement("span");
+      pathElement.className = "json-path";
+      pathElement.textContent = path;
+      pathElement.title = path;
+      container.appendChild(pathElement);
+    }
 
     // 添加可点击样式和事件
     this.makeClickable(valueElement, data);
@@ -256,6 +289,14 @@ class JsonViewer {
         this.clickCallback(valueToFill);
       }
     });
+  }
+
+  // 添加切换路径显示的方法
+  toggleJsonPath(show) {
+    this.showJsonPath = show;
+    if (this.jsonData) {
+      this.render(); // 重新渲染以应用更改
+    }
   }
 }
 
