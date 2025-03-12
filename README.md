@@ -124,7 +124,7 @@
 
 <table width="100%" cellpadding="20">
   <tr>
-    <td align="center" width="50%"><img src="https://s21.ax1x.com/2025/03/11/pENbeiD.jpg" width="200px" alt="微信收款码"></td>
+    <td align="center" width="50%"><img src="https://s21.ax1x.com/2025/03/12/pEUGBTJ.jpg" width="200px" alt="微信收款码"></td>
     <td align="center" width="50%"><img src="https://s21.ax1x.com/2025/03/12/pEUGkod.jpg" width="200px" alt="支付宝收款码"></td>
   </tr>
 </table>
