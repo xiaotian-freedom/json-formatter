@@ -121,6 +121,13 @@
 
     // 添加容器到pre元素的父级
     parent.appendChild(optionsContainer);
+
+    // 检查是否配置为自动格式化，如果是则直接开启格式化视图
+    chrome.storage.sync.get(['autoFormat'], function (result) {
+      if (result.autoFormat) {
+        createInPageJsonFormatter(jsonContent);
+      }
+    });
   }
 
   // 为整个页面添加格式化选项
