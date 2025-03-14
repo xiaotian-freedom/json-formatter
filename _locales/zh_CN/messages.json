@@ -228,5 +228,8 @@
   },
   "showJsonPath": {
     "message": "显示路径"
+  },
+  "openInNewTab": {
+    "message": "新标签页打开"
   }
 } 

@@ -585,6 +585,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // JSONPath切换按钮
   const jsonPathToggle = document.getElementById("jsonPathToggle");
 
+  // 打开方式切换按钮
+  const openModeToggle = document.getElementById("openModeToggle");
+
   // 添加切换事件
   jsonPathToggle.addEventListener("change", () => {
     viewer.toggleJsonPath(jsonPathToggle.checked);
@@ -592,11 +595,25 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.sync.set({ "showJsonPath": jsonPathToggle.checked });
   });
 
+  // 添加openMode切换事件
+  openModeToggle.addEventListener("change", () => {
+    chrome.storage.sync.set({ "openInNewTab": openModeToggle.checked });
+  });
+
   // 加载保存的路径显示设置
   chrome.storage.sync.get("showJsonPath", (data) => {
     if (data.showJsonPath === false) {
       jsonPathToggle.checked = false;
       viewer.toggleJsonPath(false);
+    }
+  });
+
+  // 加载保存的打开方式设置
+  chrome.storage.sync.get("openInNewTab", (data) => {
+    if (data.openInNewTab === true) {
+      openModeToggle.checked = true;
+    } else {
+      openModeToggle.checked = false;
     }
   });
 });
