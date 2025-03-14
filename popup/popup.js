@@ -65,8 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const jsonString = jsonInput.value.trim();
     if (jsonString) {
       try {
+        // 添加JSONC支持 - 去除注释后再解析
+        const strippedJson = stripJsonComments(jsonString);
         // 先尝试解析JSON，验证格式是否正确
-        JSON.parse(jsonString);
+        JSON.parse(strippedJson);
         // JSON格式正确才加载到查看器
         viewer.load(jsonString);
         showNotification(__("formatSuccess"), "success");
@@ -622,4 +624,106 @@ function getCurrentJsonData() {
     console.error('解析JSON失败', error);
     return null;
   }
+}
+
+/**
+ * 去除JSON字符串中的注释 (JSONC格式支持)
+ * @param {string} jsonString - 带注释的JSON字符串
+ * @returns {string} 去除注释后的JSON字符串
+ */
+function stripJsonComments(jsonString) {
+  if (!jsonString) return jsonString;
+
+  // 处理字符串状态
+  let inString = false;
+  let escapeChar = false;
+  let currentChar = '';
+  let prevChar = '';
+  let result = '';
+
+  // 处理注释状态
+  let inSingleLineComment = false;
+  let inMultiLineComment = false;
+
+  // 逐字符处理
+  for (let i = 0; i < jsonString.length; i++) {
+    prevChar = currentChar;
+    currentChar = jsonString[i];
+
+    // 处理转义字符
+    if (inString && currentChar === '\\' && !escapeChar) {
+      escapeChar = true;
+      result += currentChar;
+      continue;
+    }
+
+    // 如果前一个是转义字符，重置转义状态
+    if (escapeChar) {
+      escapeChar = false;
+      result += currentChar;
+      continue;
+    }
+
+    // 处理字符串边界
+    if (currentChar === '"' && !inSingleLineComment && !inMultiLineComment) {
+      if (!inString || prevChar !== '\\') {
+        inString = !inString;
+      }
+      result += currentChar;
+      continue;
+    }
+
+    // 如果在字符串中，直接添加字符
+    if (inString) {
+      result += currentChar;
+      continue;
+    }
+
+    // 处理单行注释开始
+    if (!inMultiLineComment && !inSingleLineComment && currentChar === '/' && jsonString[i + 1] === '/') {
+      inSingleLineComment = true;
+      i++;
+      continue;
+    }
+
+    // 处理单行注释结束
+    if (inSingleLineComment && (currentChar === '\n' || currentChar === '\r')) {
+      inSingleLineComment = false;
+      result += currentChar; // 保留换行符
+      continue;
+    }
+
+    // 在单行注释中，跳过字符
+    if (inSingleLineComment) {
+      continue;
+    }
+
+    // 处理多行注释开始
+    if (!inSingleLineComment && !inMultiLineComment && currentChar === '/' && jsonString[i + 1] === '*') {
+      inMultiLineComment = true;
+      i++;
+      continue;
+    }
+
+    // 处理多行注释结束
+    if (inMultiLineComment && currentChar === '*' && jsonString[i + 1] === '/') {
+      inMultiLineComment = false;
+      i++;
+      continue;
+    }
+
+    // 在多行注释中，跳过字符
+    if (inMultiLineComment) {
+      // 保留换行符以维持行号
+      if (currentChar === '\n' || currentChar === '\r') {
+        result += currentChar;
+      }
+      continue;
+    }
+
+    // 不在任何注释中，添加字符
+    result += currentChar;
+  }
+
+  return result;
 } 

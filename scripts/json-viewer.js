@@ -3,13 +3,20 @@ class JsonViewer {
     this.targetElement = targetElement;
     this.jsonData = null;
     this.clickCallback = null;
-    this.showJsonPath = true; // 添加显示路径选项
+    this.showJsonPath = false; // 默认不显示路径
   }
 
   // 加载并格式化JSON
   load(jsonString) {
     try {
-      this.jsonData = JSON.parse(jsonString);
+      // 首先去除可能的JSONC注释
+      const strippedJson = typeof window.stripJsonComments === 'function'
+        ? window.stripJsonComments(jsonString)
+        : jsonString;
+
+      this.jsonData = JSON.parse(strippedJson);
+      // 保存原始字符串，以便可以显示注释
+      this.originalJsonString = jsonString;
       this.render();
       return true;
     } catch (e) {
