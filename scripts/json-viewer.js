@@ -14,7 +14,10 @@ class JsonViewer {
         ? window.stripJsonComments(jsonString)
         : jsonString;
 
-      this.jsonData = JSON.parse(strippedJson);
+      // 添加JSON格式转换 - 处理非标准格式
+      const normalizedJson = this.normalizeJsonString(strippedJson);
+
+      this.jsonData = JSON.parse(normalizedJson);
       // 保存原始字符串，以便可以显示注释
       this.originalJsonString = jsonString;
       this.render();
@@ -23,6 +26,394 @@ class JsonViewer {
       this.showError("JSON格式无效: " + e.message);
       return false;
     }
+  }
+
+  // 规范化JSON字符串 - 处理非标准格式
+  normalizeJsonString(jsonString) {
+    if (!jsonString || typeof jsonString !== 'string') {
+      return jsonString;
+    }
+
+    let normalized = jsonString;
+
+    // 处理JavaScript特有的值，将其转换为JSON兼容格式
+    const transformations = [
+      // undefined -> "undefined"
+      {
+        pattern: /\bundefined\b/g,
+        replacement: '"undefined"'
+      },
+      // NaN -> "NaN"
+      {
+        pattern: /\bNaN\b/g,
+        replacement: '"NaN"'
+      },
+      // Infinity -> "Infinity"
+      {
+        pattern: /\bInfinity\b/g,
+        replacement: '"Infinity"'
+      },
+      // -Infinity -> "-Infinity"
+      {
+        pattern: /\b-Infinity\b/g,
+        replacement: '"-Infinity"'
+      },
+      // 简单的函数表达式 -> "function"
+      {
+        pattern: /function\s*\([^)]*\)\s*\{[^}]*\}/g,
+        replacement: '"function"'
+      },
+      // 箭头函数 -> "function"
+      {
+        pattern: /\([^)]*\)\s*=>\s*[^,}\]]+/g,
+        replacement: '"function"'
+      },
+      // Symbol -> "Symbol"
+      {
+        pattern: /Symbol\([^)]*\)/g,
+        replacement: '"Symbol"'
+      }
+    ];
+
+    // 需要在字符串外部进行替换，避免误替换字符串内容
+    normalized = this.replaceOutsideStrings(normalized, transformations);
+
+    // 处理无引号的属性名和字符串值
+    normalized = this.addMissingQuotes(normalized);
+
+    return normalized;
+  }
+
+  // 在字符串外部进行替换 - 避免误替换字符串内的内容
+  replaceOutsideStrings(jsonString, transformations) {
+    if (!jsonString) return jsonString;
+
+    let result = '';
+    let inString = false;
+    let escapeNext = false;
+    let currentQuote = '';
+
+    for (let i = 0; i < jsonString.length; i++) {
+      const char = jsonString[i];
+
+      if (escapeNext) {
+        result += char;
+        escapeNext = false;
+        continue;
+      }
+
+      if (char === '\\') {
+        result += char;
+        escapeNext = true;
+        continue;
+      }
+
+      if (!inString && (char === '"' || char === "'")) {
+        inString = true;
+        currentQuote = char;
+        result += char;
+        continue;
+      }
+
+      if (inString && char === currentQuote) {
+        inString = false;
+        currentQuote = '';
+        result += char;
+        continue;
+      }
+
+      if (inString) {
+        result += char;
+        continue;
+      }
+
+      // 在字符串外部，检查是否需要替换
+      let replaced = false;
+      for (const transformation of transformations) {
+        const remaining = jsonString.slice(i);
+        const match = remaining.match(transformation.pattern);
+        if (match && match.index === 0) {
+          result += transformation.replacement;
+          i += match[0].length - 1; // -1 因为for循环会自动+1
+          replaced = true;
+          break;
+        }
+      }
+
+      if (!replaced) {
+        result += char;
+      }
+    }
+
+    return result;
+  }
+
+  // 添加缺失的引号 - 处理无引号的属性名和字符串值
+  addMissingQuotes(jsonString) {
+    if (!jsonString) return jsonString;
+
+    let result = '';
+    let inString = false;
+    let escapeNext = false;
+    let currentQuote = '';
+    let i = 0;
+
+    while (i < jsonString.length) {
+      const char = jsonString[i];
+
+      if (escapeNext) {
+        result += char;
+        escapeNext = false;
+        i++;
+        continue;
+      }
+
+      if (char === '\\') {
+        result += char;
+        escapeNext = true;
+        i++;
+        continue;
+      }
+
+      if (!inString && (char === '"' || char === "'")) {
+        inString = true;
+        currentQuote = char;
+        result += char;
+        i++;
+        continue;
+      }
+
+      if (inString && char === currentQuote) {
+        inString = false;
+        currentQuote = '';
+        result += char;
+        i++;
+        continue;
+      }
+
+      if (inString) {
+        result += char;
+        i++;
+        continue;
+      }
+
+      // 在字符串外部，查找需要加引号的情况
+
+      // 1. 处理属性名（在 { 或 , 后面，: 前面的标识符）
+      if (this.isStartOfPropertyName(jsonString, i)) {
+        const propertyResult = this.processPropertyName(jsonString, i);
+        result += propertyResult.text;
+        i = propertyResult.nextIndex;
+        continue;
+      }
+
+      // 2. 处理属性值（在 : 后面的无引号标识符）
+      if (char === ':') {
+        result += char;
+        i++;
+
+        // 跳过空白
+        while (i < jsonString.length && /\s/.test(jsonString[i])) {
+          result += jsonString[i];
+          i++;
+        }
+
+        // 检查是否是无引号的字符串值
+        if (i < jsonString.length) {
+          const valueResult = this.processPropertyValue(jsonString, i);
+          result += valueResult.text;
+          i = valueResult.nextIndex;
+        }
+        continue;
+      }
+
+      result += char;
+      i++;
+    }
+
+    return result;
+  }
+
+  // 检查是否是属性名的开始位置
+  isStartOfPropertyName(jsonString, index) {
+    // 向前查找最近的非空白字符
+    let j = index - 1;
+    while (j >= 0 && /\s/.test(jsonString[j])) {
+      j--;
+    }
+
+    if (j < 0) return false;
+
+    const prevChar = jsonString[j];
+    return prevChar === '{' || prevChar === ',';
+  }
+
+  // 处理属性名
+  processPropertyName(jsonString, startIndex) {
+    let i = startIndex;
+    let identifier = '';
+
+    // 跳过前导空白
+    while (i < jsonString.length && /\s/.test(jsonString[i])) {
+      i++;
+    }
+
+    const leadingWhitespace = jsonString.slice(startIndex, i);
+
+    // 收集标识符字符
+    while (i < jsonString.length && /[a-zA-Z_$][a-zA-Z0-9_$]*/.test(jsonString[i])) {
+      identifier += jsonString[i];
+      i++;
+    }
+
+    if (identifier.length === 0) {
+      return {
+        text: jsonString[startIndex],
+        nextIndex: startIndex + 1
+      };
+    }
+
+    // 检查后面是否跟着冒号
+    let j = i;
+    while (j < jsonString.length && /\s/.test(jsonString[j])) {
+      j++;
+    }
+
+    if (j < jsonString.length && jsonString[j] === ':') {
+      // 这是一个属性名，需要加引号
+      return {
+        text: leadingWhitespace + '"' + identifier + '"',
+        nextIndex: i
+      };
+    }
+
+    // 不是属性名，返回原始文本
+    return {
+      text: jsonString.slice(startIndex, i),
+      nextIndex: i
+    };
+  }
+
+  // 处理属性值
+  processPropertyValue(jsonString, startIndex) {
+    let i = startIndex;
+
+    // 如果已经是引号开头，直接返回
+    if (jsonString[i] === '"' || jsonString[i] === "'") {
+      return {
+        text: jsonString[i],
+        nextIndex: i + 1
+      };
+    }
+
+    // 如果是数字
+    if (/[-+]?\d/.test(jsonString[i])) {
+      return this.processNumericValue(jsonString, i);
+    }
+
+    // 如果是布尔值或null
+    if (jsonString.slice(i).match(/^(true|false|null)\b/)) {
+      const match = jsonString.slice(i).match(/^(true|false|null)\b/)[0];
+      return {
+        text: match,
+        nextIndex: i + match.length
+      };
+    }
+
+    // 如果是对象或数组开始
+    if (jsonString[i] === '{' || jsonString[i] === '[') {
+      return {
+        text: jsonString[i],
+        nextIndex: i + 1
+      };
+    }
+
+    // 处理无引号字符串
+    return this.processUnquotedString(jsonString, i);
+  }
+
+  // 处理数值
+  processNumericValue(jsonString, startIndex) {
+    let i = startIndex;
+    let value = '';
+
+    // 处理可选的符号
+    if (jsonString[i] === '+' || jsonString[i] === '-') {
+      value += jsonString[i];
+      i++;
+    }
+
+    // 处理数字
+    while (i < jsonString.length && /[0-9.]/.test(jsonString[i])) {
+      value += jsonString[i];
+      i++;
+    }
+
+    // 处理科学记数法
+    if (i < jsonString.length && (jsonString[i] === 'e' || jsonString[i] === 'E')) {
+      value += jsonString[i];
+      i++;
+      if (i < jsonString.length && (jsonString[i] === '+' || jsonString[i] === '-')) {
+        value += jsonString[i];
+        i++;
+      }
+      while (i < jsonString.length && /[0-9]/.test(jsonString[i])) {
+        value += jsonString[i];
+        i++;
+      }
+    }
+
+    return {
+      text: value,
+      nextIndex: i
+    };
+  }
+
+  // 处理无引号字符串
+  processUnquotedString(jsonString, startIndex) {
+    let i = startIndex;
+    let value = '';
+
+    // 收集字符直到遇到分隔符
+    while (i < jsonString.length) {
+      const char = jsonString[i];
+
+      // 遇到这些字符时停止
+      if (char === ',' || char === '}' || char === ']' || char === '\n' || char === '\r') {
+        break;
+      }
+
+      value += char;
+      i++;
+    }
+
+    // 去除尾部空白
+    value = value.trim();
+
+    if (value.length === 0) {
+      return {
+        text: jsonString[startIndex],
+        nextIndex: startIndex + 1
+      };
+    }
+
+    // 检查是否确实是字符串（不是已知的非字符串值）
+    if (!/^(true|false|null|\d+\.?\d*|[-+]?\d*\.?\d+([eE][-+]?\d+)?)$/.test(value)) {
+      // 这是一个字符串，需要加引号
+      const leadingSpaces = jsonString.slice(startIndex, startIndex + (jsonString.slice(startIndex).length - jsonString.slice(startIndex).trimStart().length));
+      const trailingSpaces = jsonString.slice(startIndex + leadingSpaces.length + value.length, i);
+
+      return {
+        text: leadingSpaces + '"' + value + '"' + trailingSpaces,
+        nextIndex: i
+      };
+    }
+
+    // 返回原始值
+    return {
+      text: jsonString.slice(startIndex, i),
+      nextIndex: i
+    };
   }
 
   // 渲染JSON树
