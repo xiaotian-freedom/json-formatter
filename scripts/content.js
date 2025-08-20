@@ -1,5 +1,9 @@
 // 检测页面中的JSON内容并添加格式化功能
 (function () {
+  // 防抖变量
+  let lastClickTime = 0;
+  const CLICK_DELAY = 500; // 500ms防抖延迟
+
   // 监听来自background.js或popup.js的消息
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "checkForJson") {
@@ -18,8 +22,8 @@
       try {
         JSON.parse(content); // 尝试解析内容
 
-        // 如果解析成功，添加"格式化"按钮和直接格式化界面选项
-        addFormatOptionsForPre(preElements[0], content);
+        // 如果解析成功，检查是否应该自动切换到页面内格式化
+        checkAutoFormatAndSwitch(preElements[0], content);
         return true;
       } catch (e) {
         // 不是有效的JSON，无需处理
@@ -34,8 +38,8 @@
         const content = document.body.textContent;
         JSON.parse(content); // 尝试解析内容
 
-        // 如果解析成功，添加格式化选项到页面
-        addFormatOptionsForBody(content);
+        // 如果解析成功，检查是否应该自动切换到页面内格式化
+        checkAutoFormatAndSwitch(null, content);
         return true;
       } catch (e) {
         return false;
@@ -43,6 +47,25 @@
     }
 
     return false;
+  }
+
+  // 检查自动格式化设置并决定是否自动切换到页面内格式化
+  function checkAutoFormatAndSwitch(preElement, jsonContent) {
+    chrome.storage.sync.get(['autoFormat'], function (result) {
+      createInPageJsonFormatter(jsonContent);
+
+      // 如果启用了自动格式化，直接切换到页面内格式化模式
+      // if (result.autoFormat) {
+      //   return;
+      // }
+
+      // 如果没有启用自动格式化，显示格式化按钮选项
+      // if (preElement) {
+      //   addFormatOptionsForPre(preElement, jsonContent);
+      // } else {
+      //   addFormatOptionsForBody(jsonContent);
+      // }
+    });
   }
 
   // 为pre元素添加格式化选项
@@ -78,6 +101,14 @@
 
     // 点击按钮时，发送JSON内容到扩展
     formatButton.onclick = function () {
+      // 防抖检查
+      const now = Date.now();
+      if (now - lastClickTime < CLICK_DELAY) {
+        console.log("按钮点击被阻止：防抖保护");
+        return;
+      }
+      lastClickTime = now;
+
       chrome.runtime.sendMessage({
         action: "formatJson",
         json: jsonContent
@@ -121,13 +152,6 @@
 
     // 添加容器到pre元素的父级
     parent.appendChild(optionsContainer);
-
-    // 检查是否配置为自动格式化，如果是则直接开启格式化视图
-    chrome.storage.sync.get(['autoFormat'], function (result) {
-      if (result.autoFormat) {
-        createInPageJsonFormatter(jsonContent);
-      }
-    });
   }
 
   // 为整个页面添加格式化选项
@@ -171,6 +195,14 @@
 
     // 点击按钮时，发送JSON内容到扩展
     formatButton.onclick = function () {
+      // 防抖检查
+      const now = Date.now();
+      if (now - lastClickTime < CLICK_DELAY) {
+        console.log("按钮点击被阻止：防抖保护");
+        return;
+      }
+      lastClickTime = now;
+
       chrome.runtime.sendMessage({
         action: "formatJson",
         json: jsonContent
@@ -215,13 +247,6 @@
 
     // 添加容器到页面
     document.body.appendChild(optionsContainer);
-
-    // 检查是否配置为自动格式化，如果是则直接开启格式化视图
-    chrome.storage.sync.get(['autoFormat'], function (result) {
-      if (result.autoFormat) {
-        createInPageJsonFormatter(jsonContent);
-      }
-    });
   }
 
   // 创建页面内JSON格式化器
@@ -264,7 +289,7 @@
     // 更新工具栏HTML，使用搜索按钮替代搜索框
     toolbar.innerHTML = `
       <button id="edit-mode-btn" class="glass-btn" style="padding:8px 14px;border-radius:8px;cursor:pointer;">编辑模式</button>
-      <button id="preview-mode-btn" class="glass-btn active" style="padding:8px 14px;border-radius:8px;cursor:pointer;background:var(--accent-color, #4285f4);color:white;">预览模式</button>
+      <button id="preview-mode-btn" class="glass-btn active" style="padding:8px 14px;border-radius:8px;cursor:pointer;">预览模式</button>
       <button id="copy-btn" class="glass-btn" style="padding:8px 14px;border-radius:8px;cursor:pointer;">复制</button>
       <button id="save-btn" class="glass-btn" style="padding:8px 14px;border-radius:8px;cursor:pointer;">保存</button>
       <button id="expand-all-btn" class="glass-btn" style="padding:8px 14px;border-radius:8px;cursor:pointer;">展开全部</button>
@@ -430,8 +455,15 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
       .glass-btn.active {
-        background-color: var(--accent-color);
-        color: white;
+        background-color: var(--accent-color) !important;
+        color: white !important;
+        box-shadow: 0 4px 8px rgba(var(--accent-rgb), 0.3);
+      }
+      
+      body.dark-theme .glass-btn.active {
+        background-color: var(--accent-color) !important;
+        color: white !important;
+        box-shadow: 0 4px 8px rgba(var(--accent-rgb), 0.4);
       }
       /* 水波纹效果 - 修复版本 */
       .glass-btn .ripple {
@@ -1135,19 +1167,14 @@
       });
     });
 
-    // 修复模式切换 - 确保只有当前选中的模式按钮显示为激活状态
+    // 修复模式切换 - 使用CSS类而不是内联样式
     editBtn.addEventListener('click', () => {
       document.getElementById('json-editor').style.display = 'block';
       document.getElementById('json-preview').style.display = 'none';
 
-      // 更新按钮状态
+      // 更新按钮状态 - 使用CSS类
       editBtn.classList.add('active');
-      editBtn.style.backgroundColor = 'var(--accent-color, #4285f4)';
-      editBtn.style.color = 'white';
-
       previewBtn.classList.remove('active');
-      previewBtn.style.backgroundColor = 'rgba(var(--button-bg-rgb, 226, 230, 234), 0.8)';
-      previewBtn.style.color = 'var(--button-color, #333)';
     });
 
     previewBtn.addEventListener('click', () => {
@@ -1157,14 +1184,9 @@
         document.getElementById('json-editor').style.display = 'none';
         document.getElementById('json-preview').style.display = 'block';
 
-        // 更新按钮状态
+        // 更新按钮状态 - 使用CSS类
         previewBtn.classList.add('active');
-        previewBtn.style.backgroundColor = 'var(--accent-color, #4285f4)';
-        previewBtn.style.color = 'white';
-
         editBtn.classList.remove('active');
-        editBtn.style.backgroundColor = 'rgba(var(--button-bg-rgb, 226, 230, 234), 0.8)';
-        editBtn.style.color = 'var(--button-color, #333)';
       } catch (e) {
         alert('JSON格式错误: ' + e.message);
       }
@@ -1402,6 +1424,22 @@
       });
     }
 
+    // 点击按钮时，发送JSON内容到扩展
+    button.onclick = function () {
+      // 防抖检查
+      const now = Date.now();
+      if (now - lastClickTime < CLICK_DELAY) {
+        console.log("按钮点击被阻止：防抖保护");
+        return;
+      }
+      lastClickTime = now;
+
+      chrome.runtime.sendMessage({
+        action: "formatJson",
+        json: jsonContent
+      });
+    }
+
     // 确保pre元素的父级有相对定位
     const parent = preElement.parentElement;
     const originalPosition = window.getComputedStyle(parent).position;
@@ -1448,6 +1486,14 @@
 
     // 点击按钮时，发送JSON内容到扩展
     button.onclick = function () {
+      // 防抖检查
+      const now = Date.now();
+      if (now - lastClickTime < CLICK_DELAY) {
+        console.log("按钮点击被阻止：防抖保护");
+        return;
+      }
+      lastClickTime = now;
+
       chrome.runtime.sendMessage({
         action: "formatJson",
         json: jsonContent
@@ -1460,6 +1506,13 @@
 
   // 为选中文本添加右键菜单处理
   document.addEventListener('mouseup', function (event) {
+    // 防抖检查
+    const now = Date.now();
+    if (now - lastClickTime < CLICK_DELAY) {
+      return;
+    }
+    lastClickTime = now;
+
     // 检查是否有选中的文本
     const selectedText = window.getSelection().toString().trim();
     if (selectedText) {

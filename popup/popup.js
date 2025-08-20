@@ -49,17 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 检查是否有待处理的JSON数据
-  chrome.storage.local.get("pendingJson", (data) => {
-    if (data.pendingJson) {
-      jsonInput.value = data.pendingJson;
-      // 自动格式化JSON
-      formatJson();
-      // 清除存储的数据
-      chrome.storage.local.remove("pendingJson");
-    }
-  });
-
   // 格式化JSON函数
   function formatJson() {
     const jsonString = jsonInput.value.trim();

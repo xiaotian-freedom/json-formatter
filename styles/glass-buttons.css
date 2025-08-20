@@ -7,9 +7,9 @@
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 
-              0 1px 3px rgba(0, 0, 0, 0.08),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
   color: var(--foreground-color);
   font-weight: 500;
   transition: all 0.3s ease;
@@ -18,29 +18,46 @@
   outline: none;
   letter-spacing: 0.5px;
   font-size: 14px;
-  white-space: nowrap; /* 防止文字换行 */
-  flex-shrink: 0; /* 防止按钮被压缩 */
-  min-width: 70px; /* 设置最小宽度 */
+  white-space: nowrap;
+  /* 防止文字换行 */
+  flex-shrink: 0;
+  /* 防止按钮被压缩 */
+  min-width: 70px;
+  /* 设置最小宽度 */
 }
 
 /* 深色主题下的玻璃按钮样式调整 */
 .dark-theme .glass-btn {
   background: rgba(20, 20, 20, 0.5);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 
-              0 1px 3px rgba(0, 0, 0, 0.1),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .glass-btn:hover {
   background: rgba(var(--accent-rgb, 66, 133, 244), 0.15);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
-              0 3px 6px rgba(0, 0, 0, 0.08),
-              inset 0 0 0 1px rgba(var(--accent-rgb, 66, 133, 244), 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(var(--accent-rgb, 66, 133, 244), 0.2);
 }
 
 .glass-btn:active {
   transform: translateY(1px);
+}
+
+/* 激活状态的玻璃按钮样式 */
+.glass-btn.active {
+  background: rgba(var(--accent-rgb, 66, 133, 244), 0.8) !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(var(--accent-rgb, 66, 133, 244), 0.3);
+}
+
+/* 确保暗黑主题下激活按钮的可见性 */
+.dark-theme .glass-btn.active {
+  background: rgba(var(--accent-rgb, 66, 133, 244), 0.9) !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(var(--accent-rgb, 66, 133, 244), 0.4);
 }
 
 /* 水波纹效果 */
@@ -66,8 +83,9 @@
     opacity: 1;
     width: 5px;
   }
+
   100% {
     opacity: 0;
     width: 200%;
   }
-} 
+}
